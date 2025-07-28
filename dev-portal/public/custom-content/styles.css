@@ -99,6 +99,16 @@ body {
   color: white !important;
 }
 
+/* Ensure external links in navigation work properly */
+.ui.inverted.menu .item[href^="http"] {
+  pointer-events: auto !important;
+}
+
+.ui.inverted.menu .item a[href^="http"] {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
 /* Logo styling */
 .ui.menu .item img.ui.mini.image {
   width: auto !important;
@@ -216,14 +226,16 @@ body {
   border-radius: 0 !important;
 }
 
-/* Link Styling */
-a {
+/* Link Styling - More specific to avoid conflicting with navigation */
+.ui.segment a,
+.ui.container a {
   color: var(--augint-primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-a:hover {
+.ui.segment a:hover,
+.ui.container a:hover {
   color: var(--augint-secondary);
   text-decoration: underline;
 }
