@@ -1,15 +1,21 @@
 ---
-title: Developer Portal
-header: Developer Portal
-tagline: Your gateway to the data.
+title: Augmenting Integrations API Portal
+header: Augmenting Integrations API Portal
+tagline: Empowering developers with AI-driven integration solutions
 gettingStartedButton: Get Started
-apiListButton: Our APIs
+apiListButton: Explore APIs
 ---
 
-### EXPLORE AND BUILD
-        
-Read the Getting Started guide to learn how to hit the ground running to get an application up and running in no time.
+### WELCOME TO AUGMENTING INTEGRATIONS
 
-See what APIs we have to offer, including extensive documentation, and generated SDKs.
+We specialize in AI-powered integration solutions that streamline your development workflow and enhance your applications with cutting-edge capabilities.
 
-Sign in to manage your subscriptions, see your current usage, get your API Key, and test against our live API.
+### WHY CHOOSE OUR APIs?
+
+- **AI-Powered**: Leverage advanced machine learning and natural language processing capabilities
+- **Enterprise-Ready**: Built for scale, security, and reliability
+- **Developer-First**: Comprehensive documentation, SDKs, and support
+
+### GET STARTED TODAY
+
+Sign up for an account to access our API documentation, manage your subscriptions, monitor usage, and test our APIs in real-time. Our getting started guide will have you up and running in minutes.

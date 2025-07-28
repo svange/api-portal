@@ -40,59 +40,340 @@ Add your custom styling here. Note that styling in the source is loaded AFTER th
   font-style: normal;
 }
 
-/* Brand Colors */
+/* Brand Colors - Based on Augmenting Integrations website */
 :root {
-  --augint-primary: #2563eb; /* Primary blue */
-  --augint-secondary: #1e40af; /* Darker blue */
-  --augint-accent: #3b82f6; /* Lighter blue */
-  --augint-dark: #1e293b; /* Dark gray */
-  --augint-light: #f8fafc; /* Light gray */
-  --augint-text: #334155; /* Text color */
+  --augint-primary: #3B82F6; /* Bright blue */
+  --augint-secondary: #2563EB; /* Medium blue */
+  --augint-dark: #1E40AF; /* Dark blue */
+  --augint-darker: #1E293B; /* Very dark blue-gray */
+  --augint-light: #F3F4F6; /* Light gray */
+  --augint-lighter: #F9FAFB; /* Very light gray */
+  --augint-text: #374151; /* Dark gray text */
+  --augint-text-light: #6B7280; /* Light gray text */
+  --augint-accent: #60A5FA; /* Light blue accent */
+  --augint-gradient-start: #3B82F6;
+  --augint-gradient-end: #1E40AF;
 }
 
 /* Apply Lexend font globally */
-body, .ui.text, .ui.header, .ui.menu, .ui.button {
+body, 
+.ui.text, 
+.ui.header, 
+.ui.menu, 
+.ui.button,
+.ui.segment,
+.ui.card,
+.ui.modal,
+.ui.form,
+.ui.table {
   font-family: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
 }
 
-/* Override primary button colors */
-.ui.primary.button {
-  background-color: var(--augint-primary) !important;
+/* Global body styles */
+body {
+  color: var(--augint-text);
+  background-color: var(--augint-lighter);
+}
+
+/* Navigation Bar Styling */
+.ui.inverted.menu {
+  background: linear-gradient(135deg, var(--augint-gradient-start) 0%, var(--augint-gradient-end) 100%) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.ui.inverted.menu .item {
+  color: rgba(255,255,255,0.9) !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.ui.inverted.menu .item:hover {
+  background-color: rgba(255,255,255,0.1) !important;
   color: white !important;
 }
 
-.ui.primary.button:hover {
-  background-color: var(--augint-secondary) !important;
+.ui.inverted.menu .active.item {
+  background-color: rgba(255,255,255,0.15) !important;
+  color: white !important;
 }
 
-/* Style the navigation bar */
-.ui.inverted.menu {
-  background-color: var(--augint-dark) !important;
+/* Logo styling */
+.ui.menu .item img.ui.mini.image {
+  width: auto !important;
+  height: 35px !important;
+  margin-right: 0.5rem !important;
 }
 
-/* Style links */
+/* Button Styling */
+.ui.button {
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.ui.primary.button,
+.ui.positive.button {
+  background: linear-gradient(135deg, var(--augint-gradient-start) 0%, var(--augint-gradient-end) 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important;
+}
+
+.ui.primary.button:hover,
+.ui.positive.button:hover {
+  background: linear-gradient(135deg, var(--augint-secondary) 0%, var(--augint-dark) 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4) !important;
+}
+
+.ui.secondary.button {
+  background-color: var(--augint-light) !important;
+  color: var(--augint-text) !important;
+  border: 1px solid var(--augint-light) !important;
+}
+
+.ui.secondary.button:hover {
+  background-color: #E5E7EB !important;
+  transform: translateY(-1px);
+}
+
+/* Home Page Hero Section */
+.home-hero-section {
+  background: linear-gradient(135deg, var(--augint-gradient-start) 0%, var(--augint-gradient-end) 100%) !important;
+  color: white !important;
+  padding: 80px 0 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E') repeat;
+  opacity: 0.1;
+}
+
+.home-hero-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.home-hero-section h1.ui.header {
+  color: white !important;
+  font-size: 3rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 1rem !important;
+}
+
+.home-hero-section p {
+  font-size: 1.2rem !important;
+  opacity: 0.95;
+  margin-bottom: 2rem !important;
+}
+
+/* Override the specific home page segment styles */
+.ui.segment[style*="background-color: slategray"] {
+  background: linear-gradient(135deg, var(--augint-gradient-start) 0%, var(--augint-gradient-end) 100%) !important;
+  padding: 80px 0 !important;
+}
+
+/* Card Styling */
+.ui.card {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  transition: all 0.3s ease !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.ui.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+
+.ui.card > .content > .header {
+  color: var(--augint-darker) !important;
+  font-weight: 600 !important;
+}
+
+.ui.card > .content > .description {
+  color: var(--augint-text-light) !important;
+}
+
+/* Segment Styling */
+.ui.segment {
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.ui.vertical.segment {
+  border-radius: 0 !important;
+}
+
+/* Link Styling */
 a {
   color: var(--augint-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 a:hover {
   color: var(--augint-secondary);
+  text-decoration: underline;
 }
 
-/* Style the nav logo */
-.nav-logo {
-  max-height: 40px !important;
-  width: auto !important;
-}
-
-/* Home page hero section */
-.home-page h1.ui.header {
-  color: var(--augint-dark) !important;
-  font-weight: 600 !important;
-}
-
-/* API cards */
-.ui.card > .content > .header {
-  color: var(--augint-dark) !important;
+/* Form Styling */
+.ui.form .field > label {
+  color: var(--augint-text) !important;
   font-weight: 500 !important;
+}
+
+.ui.input > input {
+  border-radius: 6px !important;
+  border: 1px solid #D1D5DB !important;
+  transition: all 0.3s ease !important;
+}
+
+.ui.input > input:focus {
+  border-color: var(--augint-primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Table Styling */
+.ui.table {
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+}
+
+.ui.table thead th {
+  background-color: var(--augint-light) !important;
+  color: var(--augint-text) !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #E5E7EB !important;
+}
+
+/* Modal Styling */
+.ui.modal > .header {
+  background-color: var(--augint-light) !important;
+  color: var(--augint-darker) !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid #E5E7EB !important;
+}
+
+/* Sidebar Styling */
+.ui.vertical.menu {
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05) !important;
+  border-radius: 0 !important;
+}
+
+.ui.vertical.menu .item {
+  color: var(--augint-text) !important;
+  transition: all 0.3s ease !important;
+}
+
+.ui.vertical.menu .item:hover {
+  background-color: var(--augint-light) !important;
+  color: var(--augint-primary) !important;
+}
+
+.ui.vertical.menu .active.item {
+  background-color: var(--augint-light) !important;
+  color: var(--augint-primary) !important;
+  border-left: 3px solid var(--augint-primary) !important;
+}
+
+/* Message/Alert Styling */
+.ui.message {
+  border-radius: 6px !important;
+  border: 1px solid !important;
+}
+
+.ui.positive.message {
+  background-color: #F0FDF4 !important;
+  border-color: #86EFAC !important;
+}
+
+.ui.negative.message {
+  background-color: #FEF2F2 !important;
+  border-color: #FCA5A5 !important;
+}
+
+.ui.info.message {
+  background-color: #EFF6FF !important;
+  border-color: #93C5FD !important;
+}
+
+/* Loading Spinner */
+.ui.loader:after {
+  border-color: var(--augint-accent) transparent transparent !important;
+}
+
+/* Pagination */
+.ui.pagination.menu .item {
+  color: var(--augint-text) !important;
+  transition: all 0.3s ease !important;
+}
+
+.ui.pagination.menu .active.item {
+  background-color: var(--augint-primary) !important;
+  color: white !important;
+}
+
+/* Icon colors */
+.ui.icon {
+  color: var(--augint-text-light);
+}
+
+.ui.primary.icon {
+  color: var(--augint-primary) !important;
+}
+
+/* Swagger UI Integration */
+.swagger-ui .topbar {
+  background-color: var(--augint-darker) !important;
+}
+
+.swagger-ui .btn.authorize {
+  background-color: var(--augint-primary) !important;
+  border-color: var(--augint-primary) !important;
+}
+
+.swagger-ui .btn.authorize:hover {
+  background-color: var(--augint-secondary) !important;
+  border-color: var(--augint-secondary) !important;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ui.card,
+.ui.segment {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media only screen and (max-width: 767px) {
+  .home-hero-section h1.ui.header {
+    font-size: 2rem !important;
+  }
+  
+  .home-hero-section {
+    padding: 60px 0 !important;
+  }
 }
