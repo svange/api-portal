@@ -131,8 +131,8 @@ jobs:
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
-          # Use npm install due to lockfile sync issues
-          npm install
+          # Use legacy peer deps for this older project
+          npm install --legacy-peer-deps
           # Now run the full install script
           node run install
 
