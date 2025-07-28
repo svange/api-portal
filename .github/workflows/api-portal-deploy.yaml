@@ -130,7 +130,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "📦 Installing dependencies..."
+          echo "📦 Installing root dependencies..."
+          npm ci
+          echo "📦 Installing all project dependencies..."
           node run install
 
       - name: Build application
