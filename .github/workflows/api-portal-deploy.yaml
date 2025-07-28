@@ -131,8 +131,8 @@ jobs:
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
-          # Install root deps first so run.js can execute
-          npm ci --force
+          # Use npm install due to lockfile sync issues
+          npm install
           # Now run the full install script
           node run install
 
