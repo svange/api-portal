@@ -33,25 +33,4 @@ cognito.js
 .eslintcache
 *.iml
 
-# Python
-.venv/
-__pycache__/
-*.pyc
-.pytest_cache/
-poetry.lock
-dist/
-
-# Environment files (managed by chezmoi)
-.env
-.env.*
-# But keep environment config files
-!environments/.env.*
-
-# SAM build artifacts
-.aws-sam/
-samconfig.toml
-
-# OS files
-Thumbs.db
-
 

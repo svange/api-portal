@@ -1,0 +1,20 @@
+version = 0.1
+
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "api-portal-dev"
+s3_bucket = "aws-sam-cli-managed-api-portal-dev-artifactsbucket-kcx2dfjqjvxj"
+region = "us-east-1"
+capabilities = "CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND"
+parameter_overrides = """
+    ArtifactsS3BucketName=aws-sam-cli-managed-api-portal-dev-artifactsbucket-kcx2dfjqjvxj \
+    DevPortalSiteS3BucketName=augint-api-portal-dev-site \
+    CognitoDomainNameOrPrefix=augint-dev-portal \
+    DevPortalAdminEmail=samuelvange@gmail.com \
+    CustomDomainName=portal.aillc.link \
+    CustomDomainNameAcmCertArn=arn:aws:acm:us-east-1:330659553592:certificate/77d1a597-d0a5-46e4-b335-ec642a2950ec \
+    UseRoute53Nameservers=true \
+    StaticAssetRebuildMode=overwrite-content \
+    StaticAssetRebuildToken=initial-deploy
+"""

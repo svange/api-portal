@@ -1,0 +1,18 @@
+{
+  "name": "serverless-developer-backend",
+  "version": "4.1.1",
+  "description": "developer portal component responsible for backend application logic",
+  "main": "index.js",
+  "config": {},
+  "license": "Apache-2.0",
+  "dependencies": {
+    "aws-serverless-express": "^3.3.8",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "datauri": "^2.0.0",
+    "express": "^4.18.2",
+    "js-yaml": "^3.13.1",
+    "object-hash": "^2.0.3"
+  },
+  "devDependencies": {}
+}

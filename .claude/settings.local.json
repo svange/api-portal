@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.augmentingintegrations.com)",
+      "Bash(sam validate:*)",
+      "Bash(aws cloudfront get-distribution:*)",
+      "Bash(aws route53 list-hosted-zones:*)",
+      "Bash(nslookup:*)",
+      "Bash(aws route53:*)",
+      "Bash(rm:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(npm install:*)",
+      "Bash(npm config get:*)",
+      "Bash(npm config:*)",
+      "Bash(git restore:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git rm:*)",
+      "Bash(npm cache clean:*)",
+      "Bash(git config:*)",
+      "Bash(for file in .cfnlintrc .eslintignore .eslintrc.js .gitattributes .travis.yml)",
+      "Bash(do git checkout upstream/main -- \"$file\")",
+      "Bash(done)"
+    ],
+    "deny": []
+  }
+}
