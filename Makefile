@@ -112,6 +112,29 @@ validate:
 	@echo "✅ Validating CloudFormation template..."
 	sam validate --template-file cloudformation/template.yaml --region us-east-1
 
+# Deploy locally (bypassing GitHub Actions)
+deploy-local-dev:
+	@echo "🚀 Deploying to dev environment locally..."
+	python deploy.py deploy --env dev
+
+deploy-local-prod:
+	@echo "🏭 Deploying to prod environment locally..."
+	python deploy.py deploy --env prod
+
+# Delete stacks locally
+delete-dev:
+	@echo "🗑️  Deleting dev stack..."
+	python deploy.py delete --env dev
+
+delete-prod:
+	@echo "🗑️  Deleting prod stack..."
+	python deploy.py delete --env prod
+
+# Just build without deploying
+build-sam:
+	@echo "📦 Building SAM application..."
+	python deploy.py build
+
 # Quick preview - builds and then previews
 preview: build preview-branding
 

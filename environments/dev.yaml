@@ -13,8 +13,8 @@ aws:
 
 # Stack Parameters
 parameters:
-  # S3 Buckets (using existing SAM-created buckets)
-  ArtifactsS3BucketName: aws-sam-cli-managed-api-portal-dev-artifactsbucket-kcx2dfjqjvxj
+  # S3 Buckets
+  ArtifactsS3BucketName: augint-api-portal-dev-artifacts
   DevPortalSiteS3BucketName: augint-api-portal-dev-site
   
   # Cognito Configuration
