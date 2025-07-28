@@ -130,9 +130,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "📦 Installing root dependencies..."
-          npm ci
-          echo "📦 Installing all project dependencies..."
+          echo "📦 Installing dependencies..."
+          # Install root dependencies first (needed for run.js)
+          npm install --no-audit --no-fund
+          # Now run the full install script
           node run install
 
       - name: Build application
