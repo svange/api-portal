@@ -93,8 +93,8 @@ jobs:
           # Extract AWS configuration using grep and awk
           AWS_REGION=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "region:" | awk '{print $2}')
           AWS_ACCOUNT_ID=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "account_id:" | awk '{print $2}' | tr -d '"')
-          PIPELINE_EXECUTION_ROLE=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "pipeline_execution_role:" | sed 's/.*pipeline_execution_role: //')
-          CLOUDFORMATION_EXECUTION_ROLE=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "cloudformation_execution_role:" | sed 's/.*cloudformation_execution_role: //')
+          PIPELINE_EXECUTION_ROLE=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "pipeline_execution_role:" | sed 's/.*pipeline_execution_role: //' | tr -d '"' | xargs)
+          CLOUDFORMATION_EXECUTION_ROLE=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "cloudformation_execution_role:" | sed 's/.*cloudformation_execution_role: //' | tr -d '"' | xargs)
           ARTIFACTS_BUCKET=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "artifacts_bucket:" | awk '{print $2}')
           
           # Export to environment
@@ -112,6 +112,9 @@ jobs:
             echo "PIPELINE_EXECUTION_ROLE: $PIPELINE_EXECUTION_ROLE"
             exit 1
           fi
+          
+          # Debug: Show extracted role ARN
+          echo "🔍 Extracted PIPELINE_EXECUTION_ROLE: $PIPELINE_EXECUTION_ROLE"
           
           
           # Extract stack name
