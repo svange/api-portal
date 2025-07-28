@@ -2,54 +2,20 @@
 title: Getting Started
 ---
 
-## Getting Started with Augmenting Integrations
+## Getting Started
 
-### Welcome to Your AI-Powered Integration Journey
+### Create an account and subscribe to APIs
 
-At Augmenting Integrations, we're committed to making API integration as seamless as possible. Our platform provides everything you need to build powerful, AI-enhanced applications.
+To use any of our APIs you must create a developer account. A developer account provides an API Key for accessing our APIs, a playground for testing our APIs, and API usage metrics. Create or sign in using the buttons in the top right.
 
-### Create Your Developer Account
+After you create a new account, you will have a new API Key but it won't be linked to any of our APIs. To activate it for a particular API, navigate to [APIs](/apis) and find the API you want. Click `subscribe`. Your API Key is now subscribed to the API and you can make calls to its methods.
 
-Getting started is simple:
+Depending on the API configuration, subscribing to one API may subscribe you to several APIs. These APIs may have related functionality or share a pricing plan. Requests against any of them will be counted together in your usage.
 
-1. **Sign Up**: Click "Register" in the top navigation to create your free developer account
-2. **Verify Email**: Check your inbox and confirm your email address
-3. **Get Your API Key**: Once logged in, your unique API key will be available on your dashboard
+We know that figuring out how to use APIs can be hard. Use the "Try it out!" feature to get examples of the request and response shapes of our APIs. This makes an API call to the backend service using your API Key and provides a sample `curl` request with all necessary input parameters and the real response.
 
-### Subscribe to Our APIs
+If you need your API Key for any reason, you can always find it on [your dashboard](/dashboard) after logging in.
 
-After creating your account:
+### Monitor your usage
 
-1. Navigate to our [API Catalog](/apis) to explore available services
-2. Click "Subscribe" on any API you want to use
-3. Your API key is now activated for that service
-
-Many of our APIs are bundled together for convenience. Subscribing to one may grant access to related services that share functionality or pricing plans.
-
-### Test Your Integration
-
-We believe in hands-on learning:
-
-- Use the **"Try it out!"** feature on any API documentation page
-- See real request/response examples using your actual API key
-- Copy the generated `curl` commands for quick testing
-- Explore our comprehensive SDK libraries for popular programming languages
-
-### Monitor and Scale
-
-Track your API usage in real-time:
-
-- Visit [your dashboard](/dashboard) to view usage metrics
-- Monitor your consumption against plan limits
-- Upgrade your plan as your needs grow
-- Access detailed analytics and performance metrics
-
-### Need Help?
-
-Our support team is here to assist:
-
-- Check our comprehensive API documentation
-- Join our developer community
-- Contact support for technical assistance
-
-Start building amazing AI-powered integrations today!
+Typically each API has a usage limit set for each API Key. As you scale up your usage of the APIs, you can monitor your usage towards the limits on [your dashboard](/dashboard).
