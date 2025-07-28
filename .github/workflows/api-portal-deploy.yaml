@@ -131,8 +131,10 @@ jobs:
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
-          # Install root dependencies first (needed for run.js)
-          npm install --no-audit --no-fund
+          # First check npm version
+          npm --version
+          # Use npm ci with force to accept peer dep issues
+          npm ci --force
           # Now run the full install script
           node run install
 
