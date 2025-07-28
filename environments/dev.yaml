@@ -33,7 +33,7 @@ parameters:
   StaticAssetRebuildMode: overwrite-content
   StaticAssetRebuildToken: dev-${GITHUB_SHA}
   EdgeLambdaRebuildToken: dev-${GITHUB_SHA}
-  # Pipeline trigger: full legacy peer deps fix
+  # Pipeline trigger: direct npm install in subdirs
   
   # Custom Domain Configuration for portal.aillc.link
   CustomDomainName: "portal.aillc.link"
