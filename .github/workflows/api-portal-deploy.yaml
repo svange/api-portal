@@ -123,33 +123,8 @@ jobs:
           echo "  Region: $AWS_REGION"
           echo "  Account: $AWS_ACCOUNT_ID"
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: |
-          echo "📦 Installing dependencies..."
-          # Install root dependencies
-          npm install --legacy-peer-deps
-          # Install dev-portal dependencies
-          echo "📦 Installing dev-portal dependencies..."
-          cd dev-portal && npm install --legacy-peer-deps
-          cd ..
-          # Install backend dependencies
-          echo "📦 Installing backend dependencies..."
-          cd lambdas/backend && npm install --legacy-peer-deps
-          cd ../..
-          # Install catalog-updater dependencies
-          echo "📦 Installing catalog-updater dependencies..."
-          cd lambdas/catalog-updater && npm install --legacy-peer-deps
-          cd ../..
-
-      - name: Build application
-        run: |
-          echo "🔨 Building application..."
-          node run build
+      # Skip npm install and frontend build - SAM handles everything
+      # The React app is already built and checked into lambdas/static-asset-uploader/build/
 
       - name: Set up SAM CLI
         uses: aws-actions/setup-sam@v2
