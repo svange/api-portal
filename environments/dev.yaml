@@ -33,7 +33,7 @@ parameters:
   StaticAssetRebuildMode: overwrite-content
   StaticAssetRebuildToken: dev-${GITHUB_SHA}
   EdgeLambdaRebuildToken: dev-${GITHUB_SHA}
-  # Pipeline trigger: npm ci --force fix applied
+  # Pipeline trigger: root deps with npm ci --force
   
   # Custom Domain Configuration for portal.aillc.link
   CustomDomainName: "portal.aillc.link"
