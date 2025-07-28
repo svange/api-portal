@@ -131,10 +131,20 @@ jobs:
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
-          # Use legacy peer deps for this older project
+          # Install root dependencies
           npm install --legacy-peer-deps
-          # Now run the full install script with legacy peer deps
-          node run install -- --legacy-peer-deps
+          # Install dev-portal dependencies
+          echo "📦 Installing dev-portal dependencies..."
+          cd dev-portal && npm install --legacy-peer-deps
+          cd ..
+          # Install backend dependencies
+          echo "📦 Installing backend dependencies..."
+          cd lambdas/backend && npm install --legacy-peer-deps
+          cd ../..
+          # Install catalog-updater dependencies
+          echo "📦 Installing catalog-updater dependencies..."
+          cd lambdas/catalog-updater && npm install --legacy-peer-deps
+          cd ../..
 
       - name: Build application
         run: |
