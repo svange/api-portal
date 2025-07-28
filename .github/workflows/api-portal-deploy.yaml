@@ -2,8 +2,8 @@ name: 🚀 API Portal Deployment
 
 on:
   push:
-#    paths:
-#      - 'environments/*.yaml'
+    paths:
+      - 'environments/*.yaml'
     branches:
       - main
 
