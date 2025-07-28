@@ -32,5 +32,5 @@ cognito.js
 .vscode
 .eslintcache
 *.iml
-
+.claude/settings.local.json
 

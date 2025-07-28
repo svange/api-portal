@@ -13,12 +13,13 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   detect-environment:
     name: Detect deployment environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       environment: ${{ steps.detect.outputs.environment }}
       config_file: ${{ steps.detect.outputs.config_file }}
@@ -76,6 +77,9 @@ jobs:
     needs: detect-environment
     runs-on: ubuntu-latest
     if: needs.detect-environment.outputs.skip_deployment != 'true'
+    permissions:
+      id-token: write
+      contents: read
     
     steps:
       - name: Check out repository
