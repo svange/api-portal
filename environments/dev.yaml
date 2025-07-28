@@ -2,7 +2,7 @@ environment: dev
 stack_name: api-portal-dev
 enabled: true  # Dev environment is enabled by default
 
-# Bumped 7/28/2025 12:15
+# Bumped 7/27/2025 12:37
 # AWS Configuration
 aws:
   region: us-east-1
