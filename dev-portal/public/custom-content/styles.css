@@ -1,5 +1,98 @@
-/* CUSTOM STYLING
+/* CUSTOM STYLING - Augmenting Integrations Brand
 
 Add your custom styling here. Note that styling in the source is loaded AFTER this sheet, and has higher priority. Make sure your styles here don't collide with source styles.
 
 */
+
+/* Import Lexend font family */
+@font-face {
+  font-family: 'Lexend';
+  src: url('/custom-content/fonts/Lexend-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lexend';
+  src: url('/custom-content/fonts/Lexend-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lexend';
+  src: url('/custom-content/fonts/Lexend-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lexend';
+  src: url('/custom-content/fonts/Lexend-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lexend';
+  src: url('/custom-content/fonts/Lexend-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Brand Colors */
+:root {
+  --augint-primary: #2563eb; /* Primary blue */
+  --augint-secondary: #1e40af; /* Darker blue */
+  --augint-accent: #3b82f6; /* Lighter blue */
+  --augint-dark: #1e293b; /* Dark gray */
+  --augint-light: #f8fafc; /* Light gray */
+  --augint-text: #334155; /* Text color */
+}
+
+/* Apply Lexend font globally */
+body, .ui.text, .ui.header, .ui.menu, .ui.button {
+  font-family: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+/* Override primary button colors */
+.ui.primary.button {
+  background-color: var(--augint-primary) !important;
+  color: white !important;
+}
+
+.ui.primary.button:hover {
+  background-color: var(--augint-secondary) !important;
+}
+
+/* Style the navigation bar */
+.ui.inverted.menu {
+  background-color: var(--augint-dark) !important;
+}
+
+/* Style links */
+a {
+  color: var(--augint-primary);
+}
+
+a:hover {
+  color: var(--augint-secondary);
+}
+
+/* Style the nav logo */
+.nav-logo {
+  max-height: 40px !important;
+  width: auto !important;
+}
+
+/* Home page hero section */
+.home-page h1.ui.header {
+  color: var(--augint-dark) !important;
+  font-weight: 600 !important;
+}
+
+/* API cards */
+.ui.card > .content > .header {
+  color: var(--augint-dark) !important;
+  font-weight: 500 !important;
+}

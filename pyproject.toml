@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "api-portal"
+version = "0.1.0"
+description = "AWS API Gateway Developer Portal - Augmenting Integrations"
+authors = ["Samuel Vange <7166607+svange@users.noreply.github.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+python-semantic-release = "^8.0.0"
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+version_pattern = [
+    "package.json:version",
+    "dev-portal/package.json:version",
+    "lambdas/backend/package.json:version"
+]
+branch = "main"
+upload_to_pypi = false
+upload_to_release = true
+build_command = "echo 'No build needed'"
+commit_message = "chore(release): {version} [skip ci]"
+commit_parser = "angular"
+logging_use_named_masks = false
+major_on_zero = true
+tag_format = "v{version}"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

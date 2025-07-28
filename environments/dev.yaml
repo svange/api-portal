@@ -1,0 +1,40 @@
+environment: dev
+stack_name: api-portal-dev
+enabled: true  # Dev environment is enabled by default
+
+# AWS Configuration
+aws:
+  region: us-east-1
+  account_id: "330659553592"
+  pipeline_execution_role: arn:aws:iam::330659553592:role/aws-sam-cli-managed-api-porta-PipelineExecutionRole-6xtdRaDxmNtc
+  cloudformation_execution_role: arn:aws:iam::330659553592:role/aws-sam-cli-managed-api-p-CloudFormationExecutionRo-58LbeaLhtsWy
+  artifacts_bucket: aws-sam-cli-managed-api-portal-dev-artifactsbucket-kcx2dfjqjvxj
+
+
+# Stack Parameters
+parameters:
+  # S3 Buckets (using existing SAM-created buckets)
+  ArtifactsS3BucketName: aws-sam-cli-managed-api-portal-dev-artifactsbucket-kcx2dfjqjvxj
+  DevPortalSiteS3BucketName: augint-api-portal-dev-site
+  
+  # Cognito Configuration
+  CognitoDomainNameOrPrefix: augint-dev-portal
+  CognitoIdentityPoolName: DevPortalIdentityPool-dev
+  
+  # Admin Configuration
+  DevPortalAdminEmail: samuelvange@gmail.com
+  
+  # Table Names (optional - defaults exist)
+  DevPortalCustomersTableName: DevPortalCustomers-dev
+  DevPortalFeedbackTableName: DevPortalFeedback-dev
+  DevPortalPreLoginAccountsTableName: DevPortalPreLoginAccounts-dev
+  
+  # Static Asset Configuration
+  StaticAssetRebuildMode: overwrite-content
+  StaticAssetRebuildToken: dev-${GITHUB_SHA}
+  EdgeLambdaRebuildToken: dev-${GITHUB_SHA}
+  
+  # Custom Domain Configuration for portal.aillc.link
+  CustomDomainName: "portal.aillc.link"
+  CustomDomainNameAcmCertArn: "arn:aws:acm:us-east-1:330659553592:certificate/77d1a597-d0a5-46e4-b335-ec642a2950ec"
+  UseRoute53Nameservers: "true"

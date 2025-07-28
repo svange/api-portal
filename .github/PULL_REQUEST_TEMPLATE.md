@@ -1,6 +1,14 @@
-*Issue #, if available:*
+## 🚀 Summary
 
-*Description of changes:*
+<!-- Briefly describe what this PR does -->
 
+## 🔗 Related issues
 
-By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license.
+<!-- Link to related issues, e.g. Closes #123 -->
+
+## ✅ Checklist
+
+- [ ] Tests added/updated
+- [ ] CI passing
+- [ ] Docs updated (if needed)
+- [ ] Ready for review

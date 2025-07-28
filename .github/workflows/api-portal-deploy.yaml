@@ -1,0 +1,289 @@
+name: 🚀 API Portal Deployment
+
+on:
+  push:
+    paths:
+      - 'environments/*.yaml'
+    branches:
+      - main
+
+concurrency:
+  group: api-portal-${{ github.ref }}
+  cancel-in-progress: false  # Queue runs for infrastructure safety
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  detect-environment:
+    name: Detect deployment environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.detect.outputs.environment }}
+      config_file: ${{ steps.detect.outputs.config_file }}
+      skip_deployment: ${{ steps.detect.outputs.skip_deployment }}
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed environment file
+        id: detect
+        run: |
+          # Get changed files
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep "^environments/.*\.yaml$" || true)
+          
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "❌ No environment files changed"
+            exit 1
+          fi
+          
+          # Determine which environment to deploy
+          if echo "$CHANGED_FILES" | grep -q "environments/dev.yaml"; then
+            echo "environment=dev" >> $GITHUB_OUTPUT
+            echo "config_file=environments/dev.yaml" >> $GITHUB_OUTPUT
+            echo "🚀 Detected DEV environment deployment"
+            
+            # Check if dev is enabled
+            if grep -q "^enabled: false" environments/dev.yaml; then
+              echo "skip_deployment=true" >> $GITHUB_OUTPUT
+              echo "⏸️ DEV deployment is disabled"
+            else
+              echo "skip_deployment=false" >> $GITHUB_OUTPUT
+            fi
+          elif echo "$CHANGED_FILES" | grep -q "environments/prod.yaml"; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+            echo "config_file=environments/prod.yaml" >> $GITHUB_OUTPUT
+            echo "🏭 Detected PROD environment deployment"
+            
+            # Check if prod is enabled
+            if grep -q "^enabled: false" environments/prod.yaml; then
+              echo "skip_deployment=true" >> $GITHUB_OUTPUT
+              echo "⏸️ PROD deployment is disabled"
+            else
+              echo "skip_deployment=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "❌ Unknown environment file changed"
+            exit 1
+          fi
+
+  deploy:
+    name: Deploy API Portal
+    needs: detect-environment
+    runs-on: ubuntu-latest
+    if: needs.detect-environment.outputs.skip_deployment != 'true'
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Parse AWS configuration from YAML
+        run: |
+          CONFIG_FILE="${{ needs.detect-environment.outputs.config_file }}"
+          echo "📋 Parsing AWS configuration from $CONFIG_FILE"
+          
+          # Extract AWS configuration using grep and awk
+          AWS_REGION=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "region:" | awk '{print $2}')
+          AWS_ACCOUNT_ID=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "account_id:" | awk '{print $2}' | tr -d '"')
+          PIPELINE_EXECUTION_ROLE=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "pipeline_execution_role:" | sed 's/.*pipeline_execution_role: //')
+          CLOUDFORMATION_EXECUTION_ROLE=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "cloudformation_execution_role:" | sed 's/.*cloudformation_execution_role: //')
+          ARTIFACTS_BUCKET=$(grep -A 10 "^aws:" $CONFIG_FILE | grep "artifacts_bucket:" | awk '{print $2}')
+          
+          # Export to environment
+          echo "AWS_REGION=$AWS_REGION" >> $GITHUB_ENV
+          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
+          echo "PIPELINE_EXECUTION_ROLE=$PIPELINE_EXECUTION_ROLE" >> $GITHUB_ENV
+          echo "CLOUDFORMATION_EXECUTION_ROLE=$CLOUDFORMATION_EXECUTION_ROLE" >> $GITHUB_ENV
+          echo "ARTIFACTS_BUCKET=$ARTIFACTS_BUCKET" >> $GITHUB_ENV
+          
+          # Debug: Verify values were extracted correctly
+          if [ -z "$AWS_REGION" ] || [ -z "$AWS_ACCOUNT_ID" ] || [ -z "$PIPELINE_EXECUTION_ROLE" ]; then
+            echo "❌ Failed to extract AWS configuration from YAML"
+            echo "AWS_REGION: $AWS_REGION"
+            echo "AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID"
+            echo "PIPELINE_EXECUTION_ROLE: $PIPELINE_EXECUTION_ROLE"
+            exit 1
+          fi
+          
+          
+          # Extract stack name
+          STACK_NAME=$(grep "^stack_name:" $CONFIG_FILE | cut -d' ' -f2)
+          echo "STACK_NAME=$STACK_NAME" >> $GITHUB_ENV
+          echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
+          
+          # Replace GitHub SHA in rebuild token
+          sed -i "s/\${GITHUB_SHA}/${{ github.sha }}/g" $CONFIG_FILE
+          
+          echo "📋 Deployment Configuration:"
+          echo "  Stack: $STACK_NAME"
+          echo "  Region: $AWS_REGION"
+          echo "  Account: $AWS_ACCOUNT_ID"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing dependencies..."
+          node run install
+
+      - name: Build application
+        run: |
+          echo "🔨 Building application..."
+          node run build
+
+      - name: Set up SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.PIPELINE_EXECUTION_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: api-portal-deploy
+          role-duration-seconds: 3600
+          role-skip-session-tagging: true
+
+      - name: Deploy with SAM
+        run: |
+          echo "🚀 Deploying stack: ${STACK_NAME}"
+          echo "📦 Region: ${AWS_REGION}"
+          
+          # Build parameter overrides
+          PARAMS=""
+          while IFS=: read -r key value; do
+            # Skip non-parameter lines
+            if [[ ! "$key" =~ ^[[:space:]]+[A-Za-z] ]]; then
+              continue
+            fi
+            # Clean up key and value
+            key=$(echo "$key" | xargs)
+            value=$(echo "$value" | xargs)
+            if [ ! -z "$value" ] && [ "$value" != "" ]; then
+              PARAMS="$PARAMS $key=$value"
+            fi
+          done < <(grep -A 50 "^parameters:" $CONFIG_FILE | tail -n +2)
+          
+          # Package the application
+          sam package \
+            --template-file cloudformation/template.yaml \
+            --s3-bucket ${ARTIFACTS_BUCKET} \
+            --output-template-file packaged.yaml
+          
+          # Deploy the application
+          sam deploy \
+            --template-file packaged.yaml \
+            --stack-name ${STACK_NAME} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --region ${AWS_REGION} \
+            --s3-bucket ${ARTIFACTS_BUCKET} \
+            --no-fail-on-empty-changeset \
+            --role-arn ${CLOUDFORMATION_EXECUTION_ROLE} \
+            --parameter-overrides $PARAMS
+
+      - name: Get deployment outputs
+        run: |
+          # Get stack outputs
+          WEBSITE_URL=$(aws cloudformation describe-stacks \
+            --stack-name "${STACK_NAME}" \
+            --region ${AWS_REGION} \
+            --query 'Stacks[0].Outputs[?OutputKey==`WebsiteURL`].OutputValue' \
+            --output text)
+          
+          echo "🌐 Developer Portal URL: ${WEBSITE_URL}"
+          echo "WEBSITE_URL=${WEBSITE_URL}" >> $GITHUB_ENV
+
+  skip-message:
+    name: Deployment Skipped
+    needs: detect-environment
+    runs-on: ubuntu-latest
+    if: needs.detect-environment.outputs.skip_deployment == 'true'
+    
+    steps:
+      - name: Show skip message
+        run: |
+          ENV="${{ needs.detect-environment.outputs.environment }}"
+          echo "⏸️ Deployment for ${ENV} environment is disabled"
+          echo ""
+          echo "To enable deployment:"
+          echo "1. Edit environments/${ENV}.yaml"
+          echo "2. Change 'enabled: false' to 'enabled: true'"
+          echo "3. Commit and push the change"
+          echo ""
+          echo "This is a safety feature to prevent accidental deployments."
+
+  release:
+    name: Create release
+    needs: [detect-environment, deploy]
+    runs-on: ubuntu-latest
+    if: needs.detect-environment.outputs.environment == 'prod' && needs.detect-environment.outputs.skip_deployment != 'true'
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run semantic release
+        run: |
+          echo "🚀 Running semantic release..."
+          poetry run semantic-release version
+          
+          # Get the new version if created
+          NEW_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ ! -z "$NEW_VERSION" ]; then
+            echo "📦 New version: ${NEW_VERSION}"
+            echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
+          fi
+
+      - name: Push changes
+        if: env.NEW_VERSION != ''
+        run: |
+          git push --follow-tags origin main
+
+      - name: Create GitHub release
+        if: env.NEW_VERSION != ''
+        run: |
+          echo "🏷️ Creating GitHub release for version ${NEW_VERSION}..."
+          
+          RELEASE_NOTES="API Portal Release ${NEW_VERSION}
+          
+          ## 🚀 Deployment Details
+          - **Environment**: Production
+          - **Stack**: ${{ env.STACK_NAME }}
+          - **Portal URL**: ${{ env.WEBSITE_URL }}
+          
+          ## 📦 Changes
+          See [CHANGELOG.md](CHANGELOG.md) for detailed changes."
+          
+          gh release create "${NEW_VERSION}" \
+            --title "Release ${NEW_VERSION}" \
+            --notes "${RELEASE_NOTES}" \
+            --latest

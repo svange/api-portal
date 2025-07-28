@@ -1,0 +1,39 @@
+environment: prod
+stack_name: api-portal-prod
+enabled: false  # Set to true when ready to deploy to production
+
+# AWS Configuration - UPDATE THESE VALUES WHEN READY
+aws:
+  region: us-east-1
+  account_id: "REPLACE_WITH_PROD_ACCOUNT_ID"
+  pipeline_execution_role: arn:aws:iam::REPLACE_WITH_PROD_ACCOUNT_ID:role/api-portal-GitHubActionsGitOpsRole
+  cloudformation_execution_role: arn:aws:iam::REPLACE_WITH_PROD_ACCOUNT_ID:role/api-portal-CloudFormationRole
+  artifacts_bucket: REPLACE_WITH_PROD_ACCOUNT_ID-gitops-artifacts
+
+# Stack Parameters
+parameters:
+  # S3 Buckets
+  ArtifactsS3BucketName: augint-api-portal-prod-artifacts
+  DevPortalSiteS3BucketName: augint-api-portal-prod-site
+  
+  # Cognito Configuration
+  CognitoDomainNameOrPrefix: augint-portal
+  CognitoIdentityPoolName: DevPortalIdentityPool-prod
+  
+  # Admin Configuration
+  DevPortalAdminEmail: admin@augmentingintegrations.com
+  
+  # Table Names (optional - defaults exist)
+  DevPortalCustomersTableName: DevPortalCustomers-prod
+  DevPortalFeedbackTableName: DevPortalFeedback-prod
+  DevPortalPreLoginAccountsTableName: DevPortalPreLoginAccounts-prod
+  
+  # Static Asset Configuration
+  StaticAssetRebuildMode: overwrite-content
+  StaticAssetRebuildToken: prod-${GITHUB_SHA}
+  EdgeLambdaRebuildToken: prod-${GITHUB_SHA}
+  
+  # Custom Domain Configuration - FILL THESE OUT
+  CustomDomainName: "portal.augmentingintegrations.com"  # Your custom domain
+  CustomDomainNameAcmCertArn: "arn:aws:acm:us-east-1:PROD_ACCOUNT_ID:certificate/YOUR_CERT_ID"  # Your wildcard cert ARN
+  UseRoute53Nameservers: "true"  # Set to true to create Route53 hosted zone

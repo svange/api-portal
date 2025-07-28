@@ -1,0 +1,59 @@
+version: 2
+updates:
+  # GitHub Actions dependencies
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    pull-request-branch-name:
+      separator: "-"
+    open-pull-requests-limit: 5
+
+  # Python dependencies - AGGRESSIVE for fast testing (daily at 6am UTC)
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: "daily"  # Keep daily for now, most reliable
+      time: "06:00"
+    labels:
+      - dependencies
+      - python
+    commit-message:
+      prefix: "build"
+      include: "scope"
+    pull-request-branch-name:
+      separator: "-"
+    groups:
+      # Group patch and minor updates together for auto-merge
+      python-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Keep major updates separate for careful review
+      python-major:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+    open-pull-requests-limit: 2  # Keep it focused for fast testing
+    # Focus on production and main dev dependencies only
+    allow:
+      - dependency-type: "production"
+      - dependency-type: "development"
+    ignore:
+      # Skip security group deps (they have external dependencies causing SSL issues)
+      - dependency-name: "bandit"
+      - dependency-name: "safety"
+      - dependency-name: "pip-audit"
+      - dependency-name: "licensecheck"
+    target-branch: dev  # Enterprise pattern: Dependencies flow through staging first
