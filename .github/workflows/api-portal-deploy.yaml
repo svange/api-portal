@@ -133,8 +133,8 @@ jobs:
           echo "📦 Installing dependencies..."
           # Use legacy peer deps for this older project
           npm install --legacy-peer-deps
-          # Now run the full install script
-          node run install
+          # Now run the full install script with legacy peer deps
+          node run install -- --legacy-peer-deps
 
       - name: Build application
         run: |
