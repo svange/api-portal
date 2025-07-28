@@ -73,6 +73,25 @@ node run reset-assets    # Reset static assets to latest committed version
 - Non-subscribable APIs: External APIs uploaded as OpenAPI specs
 - Admin panel controls visibility and SDK generation settings
 
+## Deployment Process
+
+**IMPORTANT**: Stack deployments are triggered by GitHub Actions and ONLY occur when changes are made to `environments/<ENV>.yaml` files.
+
+### Triggering Deployments
+To deploy changes to AWS:
+1. Modify the timestamp comment in the appropriate environment file (e.g., `environments/dev.yaml`)
+2. Commit and push to the main branch
+3. GitHub Actions will automatically deploy the stack with your changes
+
+### Deployment Workflow
+- Always deploy to **dev** first for testing
+- After verifying in dev, deploy to **prod** (when prod.yaml is properly configured)
+- Production deployment is currently **not available** until `environments/prod.yaml` is configured with proper AWS account details
+
+### Local Development
+- The `deploy.py` script is for **emergency local troubleshooting only** - do not use for normal deployments
+- Use the GitHub Actions pipeline for all standard deployments
+
 ## Deployment Configuration
 
 Create `dev-portal/deployer.config.js` with:
