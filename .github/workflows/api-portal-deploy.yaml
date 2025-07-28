@@ -131,9 +131,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
-          # First check npm version
-          npm --version
-          # Use npm ci with force to accept peer dep issues
+          # Install root deps first so run.js can execute
           npm ci --force
           # Now run the full install script
           node run install
