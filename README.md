@@ -20,11 +20,12 @@ It also optionally supports subscription/unsubscription through a SaaS product o
 
 ## Setup
 
-There are three main ways to deploy the Developer Portal today:
+There are four main ways to deploy the Developer Portal today:
 
 1. [Deploy using SAR](#1-deploy-using-sar)
 2. [Deploy using SAM](#2-deploy-using-sam)
 3. [Deploy using the development scripts](#3-deploy-using-the-development-scripts)
+4. [Deploy using GitHub Actions](#4-deploy-using-github-actions)
 
 ### 1. Deploy using SAR
 
@@ -37,6 +38,47 @@ If you plan to automate the deployment through your own infrastructure or if you
 ### 3. Deploy using the development scripts
 
 This deployment model is better if you choose to modify the developer portal assets and/or design itself or if you need to do something else more advanced. See the [development guide](https://github.com/awslabs/aws-api-gateway-developer-portal/blob/master/BUILDING.md) for how to do this.
+
+### 4. Deploy using GitHub Actions
+
+This repository includes a GitHub Actions workflow for automated deployment. The workflow triggers when changes are pushed to environment configuration files in `environments/`.
+
+#### Setting up GitHub Actions Deployment
+
+1. **Initial SAM Setup**: First deploy the pipeline infrastructure using SAM:
+   ```bash
+   sam deploy --guided
+   ```
+   This creates the necessary IAM roles including a `PipelineExecutionRole`.
+
+2. **Configure IAM Permissions**: The PipelineExecutionRole needs additional permissions for Route53 DNS configuration. Add these permissions to the role:
+   - `route53:ListHostedZones`
+   - `route53:ListResourceRecordSets`
+   - `route53:GetHostedZone`
+   - `route53domains:GetDomainDetail`
+   - `route53domains:UpdateDomainNameservers`
+   - `route53domains:GetOperationDetail`
+
+   You can use the provided script:
+   ```bash
+   ./scripts/update-pipeline-permissions.sh
+   ```
+
+3. **Configure Environments**: Edit the environment files in `environments/`:
+   - `environments/dev.yaml` for development
+   - `environments/prod.yaml` for production
+
+4. **Deploy**: Push changes to trigger deployment:
+   ```bash
+   git add environments/dev.yaml
+   git commit -m "chore: deploy dev environment"
+   git push
+   ```
+
+The pipeline will automatically:
+- Deploy the CloudFormation stack
+- Configure custom domain DNS (if permissions are available)
+- Output the portal URL
 
 #### Prerequisites
 
