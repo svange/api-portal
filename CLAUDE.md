@@ -117,3 +117,29 @@ Create `dev-portal/deployer.config.js` with:
 - Content fragments in `dev-portal/public/custom-content/`
 - Custom styling via CSS overrides
 - Logo/branding assets in static content bucket post-deployment
+
+## Understanding the Rebuild Token Architecture
+
+The portal uses a sophisticated rebuild token pattern to control what gets updated during deployments:
+
+### Rebuild Tokens
+- **StaticAssetRebuildToken**: Controls when S3 static assets are re-uploaded
+- **EdgeLambdaRebuildToken**: Controls when Lambda@Edge functions are updated
+- Both use `${GITHUB_SHA}` in environments/*.yaml, changing with every commit
+
+### Update Behavior
+1. **First Deploy (Create)**: Everything uploaded
+2. **Subsequent Deploys (Update)**:
+   - If `StaticAssetRebuildMode: overwrite-content`: All files including custom-content uploaded
+   - If blank/default: Everything EXCEPT custom-content folder uploaded
+
+### Why This Matters
+- Infrastructure updates can temporarily affect services (like Cognito domains)
+- Custom content is preserved unless explicitly overwritten
+- Timing issues can occur during updates (DNS propagation, service availability)
+
+### Safe Update Strategy
+1. Make content-only changes first (markdown files)
+2. Test authentication after each deployment
+3. Add CSS changes incrementally with specific selectors
+4. Monitor CloudFormation events during deployment
