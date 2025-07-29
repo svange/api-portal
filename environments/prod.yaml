@@ -1,7 +1,7 @@
 environment: prod
 stack_name: api-portal-prod
 enabled: true
-# Deployment trigger: 2025-07-29 10:50 AM
+# Deployment trigger: 2025-07-29 16:24
 
 # AWS Configuration - UPDATE THESE VALUES WHEN READY
 aws:
