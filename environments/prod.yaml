@@ -1,14 +1,14 @@
 environment: prod
 stack_name: api-portal-prod
-enabled: false  # Set to true when ready to deploy to production
+enabled: true
 
 # AWS Configuration - UPDATE THESE VALUES WHEN READY
 aws:
   region: us-east-1
-  account_id: "REPLACE_WITH_PROD_ACCOUNT_ID"
-  pipeline_execution_role: arn:aws:iam::REPLACE_WITH_PROD_ACCOUNT_ID:role/api-portal-GitHubActionsGitOpsRole
-  cloudformation_execution_role: arn:aws:iam::REPLACE_WITH_PROD_ACCOUNT_ID:role/api-portal-CloudFormationRole
-  artifacts_bucket: REPLACE_WITH_PROD_ACCOUNT_ID-gitops-artifacts
+  account_id: "725925681078"
+  pipeline_execution_role: arn:aws:iam::725925681078:role/aws-sam-cli-managed-augmentin-PipelineExecutionRole-nRqSDljFyJH0
+  cloudformation_execution_role: arn:aws:iam::725925681078:role/aws-sam-cli-managed-augme-CloudFormationExecutionRo-ofPpaqgfKVmX
+  artifacts_bucket: aws-sam-cli-managed-augmenting-int-artifactsbucket-mlzjl4yrtthm
 
 # Stack Parameters
 parameters:
@@ -21,7 +21,7 @@ parameters:
   CognitoIdentityPoolName: DevPortalIdentityPool-prod
   
   # Admin Configuration
-  DevPortalAdminEmail: admin@augmentingintegrations.com
+  DevPortalAdminEmail: samuelvange@gmail.com
   
   # Table Names (optional - defaults exist)
   DevPortalCustomersTableName: DevPortalCustomers-prod
@@ -34,6 +34,6 @@ parameters:
   EdgeLambdaRebuildToken: prod-${GITHUB_SHA}
   
   # Custom Domain Configuration - FILL THESE OUT
-  CustomDomainName: "portal.augmentingintegrations.com"  # Your custom domain
-  CustomDomainNameAcmCertArn: "arn:aws:acm:us-east-1:PROD_ACCOUNT_ID:certificate/YOUR_CERT_ID"  # Your wildcard cert ARN
-  UseRoute53Nameservers: "true"  # Set to true to create Route53 hosted zone
+  CustomDomainName: "portal.augmentingintegrations.com"
+  CustomDomainNameAcmCertArn: "arn:aws:acm:us-east-1:725925681078:certificate/174fee79-97ee-446f-b23f-d538310820be"
+  UseRoute53Nameservers: "true"

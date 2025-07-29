@@ -3,6 +3,10 @@
 /coverage
 !/lambdas/static-asset-uploader/build
 /lambdas/coverage
+/lambdas/**/node_modules/
+
+# SAM build artifacts
+.aws-sam/
 
 # devportal specific
 !/dev-portal/build
