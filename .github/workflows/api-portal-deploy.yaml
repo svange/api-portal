@@ -160,14 +160,15 @@ jobs:
               continue
             fi
             
-            # Skip comment lines (any line containing #)
-            if [[ "$line" =~ "#" ]]; then
+            # Skip comment lines (lines that start with # after optional whitespace)
+            if [[ "$line" =~ ^[[:space:]]*# ]]; then
               continue
             fi
             
             # Extract key and value
             key=$(echo "$line" | cut -d: -f1 | xargs)
-            value=$(echo "$line" | cut -d: -f2- | xargs)
+            # Extract value and remove inline comments
+            value=$(echo "$line" | cut -d: -f2- | cut -d'#' -f1 | xargs)
             
             # Skip if key is empty or doesn't start with a letter
             if [[ -z "$key" ]] || ! [[ "$key" =~ ^[A-Za-z][A-Za-z0-9_]*$ ]]; then
