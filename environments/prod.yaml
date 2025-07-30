@@ -1,7 +1,7 @@
 environment: prod
 stack_name: api-portal-prod
 enabled: true
-# Deployment trigger: 2025-07-29 16:24
+update_timestamp: 2025-07-29 17:10:00  # Touch this to trigger deployments
 
 # AWS Configuration - UPDATE THESE VALUES WHEN READY
 aws:
@@ -36,5 +36,6 @@ parameters:
   
   # Custom Domain Configuration - FILL THESE OUT
   CustomDomainName: "portal.augmentingintegrations.com"
+  HostedZoneName: "augmentingintegrations.com"  # Parent zone for DNS record
   CustomDomainNameAcmCertArn: "arn:aws:acm:us-east-1:725925681078:certificate/174fee79-97ee-446f-b23f-d538310820be"
   UseRoute53Nameservers: "true"

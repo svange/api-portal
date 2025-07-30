@@ -1,8 +1,7 @@
 environment: dev
 stack_name: api-portal-dev
 enabled: true  # Dev environment is enabled by default
-
-# Bumped 07/29/2025 4:33PM
+update_timestamp: 2025-07-29 17:10:00  # Touch this to trigger deployments
 # AWS Configuration
 aws:
   region: us-east-1
@@ -38,5 +37,6 @@ parameters:
   
   # Custom Domain Configuration for portal.aillc.link
   CustomDomainName: "portal.aillc.link"
+  HostedZoneName: "aillc.link"  # Parent zone for DNS record
   CustomDomainNameAcmCertArn: "arn:aws:acm:us-east-1:330659553592:certificate/77d1a597-d0a5-46e4-b335-ec642a2950ec"
   UseRoute53Nameservers: "true"

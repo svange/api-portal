@@ -127,6 +127,11 @@ Parameters:
     Description: Optionally provide a custom domain name associated with an ACM cert to create a developer portal at that domain name (provide with the format foo.bar.net). Leave blank to create a developer portal without a custom domain name. Standing up a developer portal stack with a custom domain name will take significantly longer than without.
     Default: ''
 
+  HostedZoneName:
+    Type: String
+    Description: The Route53 hosted zone name where the DNS record should be created (e.g., example.com for subdomain.example.com). If blank, uses CustomDomainName as the hosted zone.
+    Default: ''
+
   CustomDomainNameAcmCertArn:
     Type: String
     Description: If you provided a domain name associated with an acm cert, then you must also specify here the acm cert's arn. Leave this blank to create a developer portal without a custom domain name.
@@ -1941,7 +1946,10 @@ Resources:
     Type: AWS::Route53::RecordSetGroup
     Condition: UseRoute53
     Properties:
-      HostedZoneName: !Join [ '', [ !Ref CustomDomainName, '.' ] ]
+      HostedZoneName: !If 
+        - !Equals [ !Ref HostedZoneName, '' ]
+        - !Join [ '', [ !Ref CustomDomainName, '.' ] ]
+        - !Join [ '', [ !Ref HostedZoneName, '.' ] ]
       RecordSets:
         - Name: !Join [ '', [ !Ref CustomDomainName, '.' ] ]
           Type: A
