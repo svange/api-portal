@@ -243,6 +243,12 @@ jobs:
           echo "🌐 Developer Portal URL: ${WEBSITE_URL}"
           echo "WEBSITE_URL=${WEBSITE_URL}" >> $GITHUB_ENV
 
+      - name: Mark job as skipped if no deployment
+        if: steps.should-deploy.outputs.should_deploy != 'true'
+        run: |
+          echo "::notice::Deployment was skipped for ${{ matrix.environment }}"
+          exit 78  # Special exit code that marks the job as "skipped"
+
 
   # DNS configuration is now handled by CloudFormation using the HostedZoneName parameter
   # The CustomDomainRecordSet resource creates the DNS A record automatically
