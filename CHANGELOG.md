@@ -2,7 +2,103 @@
 
 
 
+## v0.3.0 (2025-07-30)
+
+### Chore
+
+* chore: trigger production deployment to test workflow fixes ([`e2228be`](https://github.com/svange/api-portal/commit/e2228be1b652d82a013e6581f18cf4374da2038f))
+
+### Documentation
+
+* docs: add extensive documentation about three-folder update requirement
+
+- Document all files that must be updated in three locations
+- Add clear examples and commands for copying files
+- Emphasize that build system is fragile and cannot be used
+- Make it crystal clear to never suggest single-location updates
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude &lt;noreply@anthropic.com&gt; ([`8369496`](https://github.com/svange/api-portal/commit/83694962448cdd2874fe152652a20f0c5e0c9abd))
+
+### Feature
+
+* feat: rebrand portal with Augmenting Integrations identity
+
+- Update home page to show &#34;Augmenting Integrations&#34; header with &#34;API Portal&#34; tagline
+- Add professional AWS/Python/serverless focused content
+- Update Getting Started to focus on Python SDK and boto3 integration
+- Implement modern professional styling with Inter and JetBrains Mono fonts
+- Add rounded corners, smooth transitions, and blue gradient buttons
+- Replace default logos with custom cloud branding assets
+- Apply all changes to source, build, and lambda directories
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude &lt;noreply@anthropic.com&gt; ([`56169ea`](https://github.com/svange/api-portal/commit/56169ea0729cd332fa42799db4383edfd61e844d))
+
+* feat: enhance dark mode theme with improved styling and visibility adjustments ([`2066131`](https://github.com/svange/api-portal/commit/206613183fc0893b24b904e787481e272a666d31))
+
+* feat: implement dark mode theme and Augmenting Integrations branding
+
+- Add dark mode CSS theme with proper Semantic UI overrides
+- Replace logos with AI brain icons from branding assets
+- Update favicon to match brand
+- Remove pre-commit setup (keeping deployment simple)
+- Trigger deployment with updated theme ([`67aa084`](https://github.com/svange/api-portal/commit/67aa08489432d8a8b628c2bbd9ddda9d13c6daa6))
+
+* feat: add auto-rebuild pre-commit hook and update portal tagline ([`472df57`](https://github.com/svange/api-portal/commit/472df5764673a82bc00ba2ead8011ddc852a7f15))
+
+### Fix
+
+* fix: resolve semantic-release detached HEAD issue and enable both environments
+
+- Fix workflow to checkout main branch then reset to deployed commit
+- This prevents &#39;src refspec main does not match any&#39; error
+- Enable both dev and prod environments for deployment
+- Update timestamps to trigger deployments ([`242681e`](https://github.com/svange/api-portal/commit/242681eed37dba7da08b65ebc741e574c9c87387))
+
+* fix: ensure semantic-release only runs for actual prod deployments
+
+- Add outputs to track when prod deployment actually succeeds
+- Check out exact deployed commit for release process
+- Verify commit SHA before running semantic-release
+- Fail cleanly if push conflicts occur to maintain release integrity
+
+This prevents the issue where semantic-release runs even when deployment
+was skipped, and ensures releases exactly match what was deployed. ([`5b8e717`](https://github.com/svange/api-portal/commit/5b8e717edceefb111109cc2c794fae784af3220c))
+
+* fix: enable production environment and update timestamp for accuracy ([`18ec2e9`](https://github.com/svange/api-portal/commit/18ec2e95801106aede0901176415646ee2003838))
+
+* fix: update timestamp in dev.yaml for accuracy ([`5899057`](https://github.com/svange/api-portal/commit/589905755580e0cebd6536df55114c8c331867e1))
+
+* fix: modify deployment script to exit successfully when deployment is skipped ([`8b94e0e`](https://github.com/svange/api-portal/commit/8b94e0ee0e4953c651e43448e408a392f09f2530))
+
+* fix: modify deployment script to exit successfully when deployment is skipped ([`5bfd6bf`](https://github.com/svange/api-portal/commit/5bfd6bf1bfe9da1e5f5ed4a1798d64b0ddf7d62c))
+
+* fix: show skipped status in GitHub Actions when environments are disabled or unchanged
+
+- Add step to mark job as skipped (gray) when no deployment occurs
+- Uses exit code 78 to properly indicate skip status
+- Makes dashboard more meaningful: green=deployed, gray=skipped, red=failed
+- Helps track which environments actually received updates ([`aa0ed13`](https://github.com/svange/api-portal/commit/aa0ed136ba661becec238935609be43a7fb76fff))
+
+* fix: update prod.yaml to disable production environment and correct timestamps in dev.yaml ([`a859d4c`](https://github.com/svange/api-portal/commit/a859d4cb7318791809f8cc9f836dbbf20607932f))
+
+* fix: restore prod.yaml to match remote - no prod deployment ([`cd7a684`](https://github.com/svange/api-portal/commit/cd7a68459db6ea147c7118132315aa6365373715))
+
+* fix: make pre-commit hook more resilient and trigger deployment ([`d9292f1`](https://github.com/svange/api-portal/commit/d9292f166be1d0a34f7ffe3b31a68c9342ce5a1f))
+
+### Test
+
+* test: verify pre-commit hook works ([`d4e3855`](https://github.com/svange/api-portal/commit/d4e38554ca11d7dd9888b0a32eee86dca1cad867))
+
+
 ## v0.2.0 (2025-07-30)
+
+### Chore
+
+* chore(release): 0.2.0 [skip ci] ([`19fde63`](https://github.com/svange/api-portal/commit/19fde63286b666fb210b6efdc63d48e13fa6f3df))
 
 ### Feature
 
