@@ -2,7 +2,7 @@
 title: Getting Started
 ---
 
-## Getting Started
+## Getting Started!
 
 ### Create an account and subscribe to APIs
 

@@ -3,3 +3,83 @@
 Add your custom styling here. Note that styling in the source is loaded AFTER this sheet, and has higher priority. Make sure your styles here don't collide with source styles.
 
 */
+
+/* Dark Mode Theme for Augmenting Integrations */
+
+/* Main background */
+body, #root {
+  background-color: #1a1a1a !important;
+  color: #e0e0e0 !important;
+}
+
+/* Semantic UI segments */
+.ui.segment {
+  background-color: #2a2a2a !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+/* Cards and containers */
+.ui.card, .ui.cards > .card {
+  background-color: #2a2a2a !important;
+  box-shadow: 0 1px 3px 0 #000 !important;
+}
+
+/* Tables */
+.ui.table {
+  background-color: #2a2a2a !important;
+  color: #e0e0e0 !important;
+}
+
+.ui.table thead th {
+  background-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
+}
+
+/* Forms and inputs */
+.ui.form .field > label {
+  color: #e0e0e0 !important;
+}
+
+.ui.input input {
+  background-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
+  border-color: #4a4a4a !important;
+}
+
+/* Buttons - keep positive/primary buttons bright */
+.ui.button {
+  background-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
+}
+
+.ui.positive.button,
+.ui.primary.button {
+  /* Keep these bright for CTAs */
+  background-color: #21ba45 !important;
+  color: white !important;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6,
+.ui.header {
+  color: #e0e0e0 !important;
+}
+
+/* Links */
+a {
+  color: #4db8ff !important;
+}
+
+a:hover {
+  color: #80ccff !important;
+}
+
+/* Home page hero section - already dark (slategray) */
+/* Keep the existing dark hero as-is */
+
+/* API documentation sections */
+.swagger-ui .info .title,
+.swagger-ui .scheme-container {
+  color: #e0e0e0 !important;
+}
