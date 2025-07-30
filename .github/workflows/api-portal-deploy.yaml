@@ -301,7 +301,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ needs.deploy.outputs.deployed_commit }}
+
+      - name: Reset to deployed commit
+        run: |
+          echo "📍 Resetting to deployed commit: ${{ needs.deploy.outputs.deployed_commit }}"
+          git reset --hard ${{ needs.deploy.outputs.deployed_commit }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
