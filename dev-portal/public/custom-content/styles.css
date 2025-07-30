@@ -4,82 +4,223 @@ Add your custom styling here. Note that styling in the source is loaded AFTER th
 
 */
 
-/* Dark Mode Theme for Augmenting Integrations */
+/* Professional Dark Mode Theme - Monokai Inspired */
 
-/* Main background */
+/* Main background - warmer, less harsh */
 body, #root {
-  background-color: #1a1a1a !important;
-  color: #e0e0e0 !important;
+  background-color: #272822 !important;
+  color: #f8f8f2 !important;
 }
 
 /* Semantic UI segments */
 .ui.segment {
-  background-color: #2a2a2a !important;
-  color: #e0e0e0 !important;
-  border: 1px solid #3a3a3a !important;
+  background-color: #3e3d32 !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
 }
 
 /* Cards and containers */
 .ui.card, .ui.cards > .card {
-  background-color: #2a2a2a !important;
-  box-shadow: 0 1px 3px 0 #000 !important;
+  background-color: #3e3d32 !important;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.4) !important;
+  border: 1px solid #49483e !important;
 }
 
-/* Tables */
+/* Tables - Much improved visibility */
 .ui.table {
-  background-color: #2a2a2a !important;
-  color: #e0e0e0 !important;
+  background-color: #272822 !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
 }
 
-.ui.table thead th {
-  background-color: #3a3a3a !important;
-  color: #e0e0e0 !important;
+.ui.table > thead > tr > th {
+  background-color: #49483e !important;
+  color: #f8f8f2 !important;
+  border-bottom: 2px solid #75715e !important;
+  font-weight: bold !important;
+}
+
+.ui.table > tbody > tr > td {
+  border-top: 1px solid #49483e !important;
+}
+
+/* Alternating row colors for better readability */
+.ui.table > tbody > tr:nth-child(even) {
+  background-color: #2f2e27 !important;
+}
+
+.ui.table > tbody > tr:hover {
+  background-color: #3e3d32 !important;
+}
+
+/* Table borders */
+.ui.table td {
+  border-left: 1px solid #49483e !important;
+}
+
+.ui.table td:first-child {
+  border-left: none !important;
+}
+
+/* Dividers - Now visible */
+.ui.divider {
+  border-top: 1px solid #49483e !important;
+  border-bottom: 1px solid #49483e !important;
+  color: #75715e !important;
+}
+
+.ui.horizontal.divider {
+  background-color: #272822 !important;
+}
+
+hr {
+  border: 0 !important;
+  height: 1px !important;
+  background: #49483e !important;
 }
 
 /* Forms and inputs */
 .ui.form .field > label {
-  color: #e0e0e0 !important;
+  color: #f8f8f2 !important;
 }
 
-.ui.input input {
-  background-color: #3a3a3a !important;
-  color: #e0e0e0 !important;
-  border-color: #4a4a4a !important;
+.ui.input input,
+.ui.form input[type="text"],
+.ui.form input[type="email"],
+.ui.form input[type="password"],
+.ui.form textarea {
+  background-color: #3e3d32 !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
 }
 
-/* Buttons - keep positive/primary buttons bright */
+.ui.input input:focus,
+.ui.form input:focus,
+.ui.form textarea:focus {
+  background-color: #49483e !important;
+  border-color: #75715e !important;
+}
+
+/* Dropdown menus */
+.ui.dropdown {
+  background-color: #3e3d32 !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
+}
+
+.ui.dropdown .menu {
+  background-color: #3e3d32 !important;
+  border: 1px solid #49483e !important;
+}
+
+.ui.dropdown .menu > .item {
+  color: #f8f8f2 !important;
+  border-top: 1px solid #49483e !important;
+}
+
+.ui.dropdown .menu > .item:hover {
+  background-color: #49483e !important;
+}
+
+/* Buttons - subtle styling */
 .ui.button {
-  background-color: #3a3a3a !important;
-  color: #e0e0e0 !important;
+  background-color: #49483e !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #75715e !important;
 }
 
+.ui.button:hover {
+  background-color: #75715e !important;
+}
+
+/* Keep CTAs bright and prominent */
 .ui.positive.button,
 .ui.primary.button {
-  /* Keep these bright for CTAs */
-  background-color: #21ba45 !important;
-  color: white !important;
+  background-color: #a6e22e !important;
+  color: #272822 !important;
+  border: none !important;
+}
+
+.ui.positive.button:hover,
+.ui.primary.button:hover {
+  background-color: #b8ff2e !important;
 }
 
 /* Headers */
 h1, h2, h3, h4, h5, h6,
 .ui.header {
-  color: #e0e0e0 !important;
+  color: #f8f8f2 !important;
 }
 
-/* Links */
+/* Links - Monokai blue */
 a {
-  color: #4db8ff !important;
+  color: #66d9ef !important;
 }
 
 a:hover {
-  color: #80ccff !important;
+  color: #a1e7f5 !important;
+  text-decoration: underline !important;
+}
+
+/* Menu items */
+.ui.menu {
+  background-color: #3e3d32 !important;
+  border: 1px solid #49483e !important;
+}
+
+.ui.menu .item {
+  color: #f8f8f2 !important;
+}
+
+.ui.menu .active.item {
+  background-color: #49483e !important;
+}
+
+/* Modals */
+.ui.modal {
+  background-color: #3e3d32 !important;
+  border: 1px solid #49483e !important;
+}
+
+.ui.modal > .header {
+  background-color: #49483e !important;
+  color: #f8f8f2 !important;
+}
+
+/* Messages and alerts */
+.ui.message {
+  background-color: #3e3d32 !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
+}
+
+/* Code blocks */
+pre, code {
+  background-color: #3e3d32 !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
+}
+
+/* Swagger UI adjustments */
+.swagger-ui .info .title,
+.swagger-ui .scheme-container {
+  color: #f8f8f2 !important;
+}
+
+.swagger-ui .opblock {
+  background-color: #3e3d32 !important;
+  border: 1px solid #49483e !important;
+}
+
+/* Lists */
+.ui.list > .item {
+  color: #f8f8f2 !important;
+}
+
+/* Breadcrumbs */
+.ui.breadcrumb .divider {
+  color: #75715e !important;
 }
 
 /* Home page hero section - already dark (slategray) */
 /* Keep the existing dark hero as-is */
-
-/* API documentation sections */
-.swagger-ui .info .title,
-.swagger-ui .scheme-container {
-  color: #e0e0e0 !important;
-}

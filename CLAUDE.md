@@ -118,6 +118,14 @@ Create `dev-portal/deployer.config.js` with:
 - Custom styling via CSS overrides
 - Logo/branding assets in static content bucket post-deployment
 
+**IMPORTANT: CSS Update Requirement**
+When updating `styles.css`, you MUST update it in ALL THREE locations to avoid rebuilding:
+1. `dev-portal/public/custom-content/styles.css` (source)
+2. `dev-portal/build/custom-content/styles.css` (dev build)
+3. `lambdas/static-asset-uploader/build/custom-content/styles.css` (deployment build)
+
+This is necessary due to the fragile build system. Always copy the exact same content to all three locations.
+
 ## Auto-rebuild on Content Changes
 
 This project includes a pre-commit hook that automatically rebuilds the portal when content files are modified. This ensures that build artifacts in `lambdas/static-asset-uploader/build/` stay in sync with source files.
