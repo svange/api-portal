@@ -303,7 +303,7 @@ jobs:
 
       - name: Run semantic release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "🚀 Running semantic release..."
           poetry run semantic-release version
@@ -322,6 +322,8 @@ jobs:
 
       - name: Create GitHub release
         if: env.NEW_VERSION != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "🏷️ Creating GitHub release for version ${NEW_VERSION}..."
           
@@ -335,7 +337,16 @@ jobs:
           ## 📦 Changes
           See [CHANGELOG.md](CHANGELOG.md) for detailed changes."
           
-          gh release create "${NEW_VERSION}" \
-            --title "Release ${NEW_VERSION}" \
-            --notes "${RELEASE_NOTES}" \
-            --latest
+          # Check if release already exists
+          if gh release view "${NEW_VERSION}" >/dev/null 2>&1; then
+            echo "📝 Release ${NEW_VERSION} already exists, updating..."
+            gh release edit "${NEW_VERSION}" \
+              --title "Release ${NEW_VERSION}" \
+              --notes "${RELEASE_NOTES}"
+          else
+            echo "✨ Creating new release ${NEW_VERSION}..."
+            gh release create "${NEW_VERSION}" \
+              --title "Release ${NEW_VERSION}" \
+              --notes "${RELEASE_NOTES}" \
+              --latest
+          fi

@@ -38,3 +38,4 @@ cognito.js
 *.iml
 .claude/settings.local.json
 
+.env
