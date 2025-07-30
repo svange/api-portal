@@ -32,16 +32,35 @@ try {
     });
     
     if (hasContentChanges) {
-        console.log('Content changes detected. Running build...');
+        console.log('Content changes detected. Checking build environment...');
         
-        // Run the build
-        execSync('node run build', { stdio: 'inherit' });
+        // Check if dependencies are installed
+        const devPortalNodeModules = path.join('dev-portal', 'node_modules');
+        if (!fs.existsSync(devPortalNodeModules)) {
+            console.warn('⚠️  WARNING: Build dependencies not installed.');
+            console.warn('⚠️  Run "node run install" to set up the build environment.');
+            console.warn('⚠️  For now, please manually run "node run build" after installing dependencies.');
+            console.warn('⚠️  Continuing with commit...');
+            return; // Exit gracefully
+        }
         
-        // Add the updated build artifacts to the commit
-        execSync('git add lambdas/static-asset-uploader/build/', { stdio: 'inherit' });
-        execSync('git add dev-portal/build/', { stdio: 'inherit' });
+        console.log('Running build...');
         
-        console.log('Build complete and artifacts staged.');
+        try {
+            // Run the build
+            execSync('node run build', { stdio: 'inherit' });
+            
+            // Add the updated build artifacts to the commit
+            execSync('git add lambdas/static-asset-uploader/build/', { stdio: 'inherit' });
+            execSync('git add dev-portal/build/', { stdio: 'inherit' });
+            
+            console.log('Build complete and artifacts staged.');
+        } catch (buildError) {
+            console.error('⚠️  WARNING: Build failed:', buildError.message);
+            console.error('⚠️  Please ensure build artifacts are up to date before deploying.');
+            console.error('⚠️  Continuing with commit...');
+            // Exit gracefully - don't block the commit
+        }
     } else {
         console.log('No content changes detected. Skipping rebuild.');
     }
