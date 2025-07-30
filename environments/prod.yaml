@@ -1,7 +1,7 @@
 environment: prod
 stack_name: api-portal-prod
 enabled: true
-update_timestamp: 2025-07-29 1830
+update_timestamp: 2025-07-29 1842
 
 # AWS Configuration - UPDATE THESE VALUES WHEN READY
 aws:

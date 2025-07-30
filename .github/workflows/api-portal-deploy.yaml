@@ -37,8 +37,10 @@ jobs:
           CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep "^environments/.*\.yaml$" || true)
           
           if [ -z "$CHANGED_FILES" ]; then
-            echo "❌ No environment files changed"
-            exit 1
+            echo "ℹ️ No environment files changed - skipping deployments"
+            echo "deploy_dev=false" >> $GITHUB_OUTPUT
+            echo "deploy_prod=false" >> $GITHUB_OUTPUT
+            exit 0
           fi
           
           # Determine which environments to deploy
@@ -68,8 +70,9 @@ jobs:
           echo "deploy_prod=$deploy_prod" >> $GITHUB_OUTPUT
           
           if [[ "$deploy_dev" == "false" && "$deploy_prod" == "false" ]]; then
-            echo "❌ No enabled environments to deploy"
-            exit 1
+            echo "ℹ️ No enabled environments to deploy"
+            # Still exit successfully so the workflow doesn't fail
+            exit 0
           fi
 
   deploy:
