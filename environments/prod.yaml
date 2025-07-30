@@ -1,7 +1,7 @@
 environment: prod
 stack_name: api-portal-prod
 enabled: true
-update_timestamp: 2025-07-29 17:10:00  # Touch this to trigger deployments
+update_timestamp: 2025-07-29 1713
 
 # AWS Configuration - UPDATE THESE VALUES WHEN READY
 aws:

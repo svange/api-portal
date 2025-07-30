@@ -155,8 +155,8 @@ jobs:
           # Build parameter overrides
           PARAMS=""
           while IFS=: read -r key value; do
-            # Skip non-parameter lines
-            if [[ ! "$key" =~ ^[[:space:]]+[A-Za-z] ]]; then
+            # Skip comment lines and non-parameter lines
+            if [[ "$key" =~ ^[[:space:]]*# ]] || [[ ! "$key" =~ ^[[:space:]]+[A-Za-z] ]]; then
               continue
             fi
             # Clean up key and value

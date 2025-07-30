@@ -178,6 +178,7 @@ Conditions:
   UseCustomDomainName: !And [!And [!Not [!Equals [!Ref CustomDomainName, '']], !Not [!Equals [!Ref CustomDomainNameAcmCertArn, '']]], !Condition NotDevelopmentMode]
   NoCustomDomainName: !And [!Not [ !Condition UseCustomDomainName ], !Condition NotDevelopmentMode]
   UseRoute53: !And [!Equals [!Ref UseRoute53Nameservers, 'true'], !Condition UseCustomDomainName]
+  UseCustomHostedZone: !Not [!Equals [!Ref HostedZoneName, '']]
   EnableFeedbackSubmission: !Not [!Equals [!Ref DevPortalAdminEmail, '']]
   LocalDevelopmentMode: !Or [!Equals [!Ref DevelopmentMode, 'true'], !Equals [!Ref LocalDevelopmentMode, 'true']]
   DevelopmentMode: !Equals [!Ref DevelopmentMode, 'true']
@@ -1946,10 +1947,10 @@ Resources:
     Type: AWS::Route53::RecordSetGroup
     Condition: UseRoute53
     Properties:
-      HostedZoneName: !If 
-        - !Equals [ !Ref HostedZoneName, '' ]
-        - !Join [ '', [ !Ref CustomDomainName, '.' ] ]
-        - !Join [ '', [ !Ref HostedZoneName, '.' ] ]
+      HostedZoneName: !If
+        - UseCustomHostedZone
+        - !Join ['', [!Ref HostedZoneName, '.']]
+        - !Join ['', [!Ref CustomDomainName, '.']]
       RecordSets:
         - Name: !Join [ '', [ !Ref CustomDomainName, '.' ] ]
           Type: A
