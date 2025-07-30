@@ -1959,9 +1959,7 @@ Resources:
 
   SubdomainDelegationRecords:
     Type: AWS::Route53::RecordSet
-    Condition: !And 
-      - !Condition UseRoute53
-      - !Condition UseCustomHostedZone
+    Condition: !And [!Condition UseRoute53, !Condition UseCustomHostedZone]
     Properties:
       HostedZoneName: !Join ['', [!Ref HostedZoneName, '.']]
       Name: !Join ['', [!Ref CustomDomainName, '.']]
