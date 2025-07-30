@@ -270,7 +270,7 @@ jobs:
     name: Create release
     needs: [detect-environment, deploy]
     runs-on: ubuntu-latest
-    if: needs.detect-environment.outputs.deploy_prod == 'true' && always() && needs.deploy.result == 'success'
+    if: needs.detect-environment.outputs.deploy_prod == 'true' && needs.deploy.result == 'success'
     permissions:
       contents: write
       issues: write
