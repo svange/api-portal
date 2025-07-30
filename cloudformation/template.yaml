@@ -179,6 +179,7 @@ Conditions:
   NoCustomDomainName: !And [!Not [!Condition UseCustomDomainName], !Condition NotDevelopmentMode]
   UseRoute53: !And [!Equals [!Ref UseRoute53Nameservers, 'true'], !Condition UseCustomDomainName]
   UseCustomHostedZone: !Not [!Equals [!Ref HostedZoneName, '']]
+  UseDNSDelegation: !And [!Condition UseRoute53, !Condition UseCustomHostedZone]
   EnableFeedbackSubmission: !Not [!Equals [!Ref DevPortalAdminEmail, '']]
   LocalDevelopmentMode: !Or [!Equals [!Ref DevelopmentMode, 'true'], !Equals [!Ref LocalDevelopmentMode, 'true']]
   DevelopmentMode: !Equals [!Ref DevelopmentMode, 'true']
@@ -1959,7 +1960,7 @@ Resources:
 
   SubdomainDelegationRecords:
     Type: AWS::Route53::RecordSet
-    Condition: !And [!Condition UseRoute53, !Condition UseCustomHostedZone]
+    Condition: UseDNSDelegation
     Properties:
       HostedZoneName: !Join ['', [!Ref HostedZoneName, '.']]
       Name: !Join ['', [!Ref CustomDomainName, '.']]
