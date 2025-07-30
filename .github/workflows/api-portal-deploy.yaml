@@ -83,6 +83,9 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    outputs:
+      prod_deployed: ${{ steps.prod-deploy-check.outputs.deployed }}
+      deployed_commit: ${{ steps.prod-deploy-check.outputs.commit }}
     strategy:
       matrix:
         include:
@@ -243,6 +246,14 @@ jobs:
           echo "🌐 Developer Portal URL: ${WEBSITE_URL}"
           echo "WEBSITE_URL=${WEBSITE_URL}" >> $GITHUB_ENV
 
+      - name: Track production deployment status
+        id: prod-deploy-check
+        if: matrix.environment == 'prod' && steps.should-deploy.outputs.should_deploy == 'true'
+        run: |
+          echo "deployed=true" >> $GITHUB_OUTPUT
+          echo "commit=${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "✅ Production deployment successful at commit ${{ github.sha }}"
+
       - name: Mark job as skipped if no deployment
         if: steps.should-deploy.outputs.should_deploy != 'true'
         run: |
@@ -277,9 +288,9 @@ jobs:
 
   release:
     name: Create release
-    needs: [detect-environment, deploy]
+    needs: [deploy]
     runs-on: ubuntu-latest
-    if: needs.detect-environment.outputs.deploy_prod == 'true' && needs.deploy.result == 'success'
+    if: needs.deploy.outputs.prod_deployed == 'true'
     permissions:
       contents: write
       issues: write
@@ -290,6 +301,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ needs.deploy.outputs.deployed_commit }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -310,6 +322,21 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Verify commit matches deployment
+        run: |
+          CURRENT_SHA=$(git rev-parse HEAD)
+          EXPECTED_SHA="${{ needs.deploy.outputs.deployed_commit }}"
+          
+          if [ "$CURRENT_SHA" != "$EXPECTED_SHA" ]; then
+            echo "❌ ERROR: Commit mismatch!"
+            echo "Current commit: $CURRENT_SHA"
+            echo "Expected commit: $EXPECTED_SHA"
+            exit 1
+          fi
+          
+          echo "✅ Verified: Running semantic-release on the deployed commit"
+          echo "Commit SHA: $CURRENT_SHA"
+
       - name: Run semantic release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -327,7 +354,20 @@ jobs:
       - name: Push changes
         if: env.NEW_VERSION != ''
         run: |
-          git push --follow-tags origin main
+          echo "📤 Pushing version bump and tags..."
+          
+          if ! git push --follow-tags origin main; then
+            echo "❌ Failed to push version bump to main"
+            echo ""
+            echo "This happens when another commit was pushed to main during our workflow."
+            echo "Since we only release the exact commit that was deployed, we cannot"
+            echo "resolve this automatically without compromising release integrity."
+            echo ""
+            echo "Resolution: Re-run this workflow to try again with the latest code."
+            exit 1
+          fi
+          
+          echo "✅ Successfully pushed version ${NEW_VERSION}"
 
       - name: Create GitHub release
         if: env.NEW_VERSION != ''
