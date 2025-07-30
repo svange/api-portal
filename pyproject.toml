@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "api-portal"
-version = "0.1.0"
+version = "0.2.0"
 description = "AWS API Gateway Developer Portal - Augmenting Integrations"
 authors = ["Samuel Vange <7166607+svange@users.noreply.github.com>"]
 readme = "README.md"

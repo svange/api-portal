@@ -2,9 +2,69 @@
 
 
 
+## v0.2.0 (2025-07-30)
+
+### Feature
+
+* feat: implement proper DNS subdomain delegation pattern
+
+- Revert CustomDomainRecordSet to always use subdomain hosted zone
+- Add SubdomainDelegationRecords to automatically create NS records in parent zone
+- Keep HostedZoneName parameter for specifying parent zone for delegation
+- Matrix strategy for parallel deployment of both environments
+- Fix parameter parsing to handle inline comments
+
+This implements the standard Route53 subdomain delegation pattern where:
+- Subdomain zone contains the A record pointing to CloudFront
+- Parent zone contains NS records delegating to subdomain zone
+- Fully automated with no manual DNS configuration required ([`6bec71a`](https://github.com/svange/api-portal/commit/6bec71adc1e8ed86a4b9d0a40ebb343f3c45480a))
+
+### Fix
+
+* fix: update deployment conditions and timestamps in environment configuration files ([`6fd83ca`](https://github.com/svange/api-portal/commit/6fd83ca8ea4144e5b98c3052878f6c0068a11593))
+
+* fix: CloudFormation condition must be a string reference
+
+- Create new UseDNSDelegation condition in Conditions section
+- Reference it as a string in SubdomainDelegationRecords
+- Fixes E3001 error: Condition property expects string, not inline expression
+- This was preventing all deployments with &#39;Every Condition member must be a string&#39; error ([`f708f0e`](https://github.com/svange/api-portal/commit/f708f0e6062c2a61c03e848e30e8192874a7fd4a))
+
+* fix: update deployment conditions and timestamps in environment configuration files ([`186e4c3`](https://github.com/svange/api-portal/commit/186e4c3a1481a61b244aecd523d2f9726e722711))
+
+* fix: flatten nested CloudFormation conditions causing parse errors
+
+- Fix UseCustomDomainName condition with nested \!And causing &#39;Every Condition member must be a string&#39;
+- Remove extra space in NoCustomDomainName condition
+- This was preventing both dev and prod deployments ([`6275678`](https://github.com/svange/api-portal/commit/6275678fd8f5c2eba537893c962915fd90aabe55))
+
+* fix: update deployment conditions and timestamps in environment configuration files ([`8ba098a`](https://github.com/svange/api-portal/commit/8ba098a1416f78824c8dd54baa287cf84bae4d70))
+
+* fix: correct CloudFormation condition syntax for SubdomainDelegationRecords
+
+- Fix &#39;Every Condition member must be a string&#39; error
+- Use proper inline \!And syntax with square brackets ([`929fbd9`](https://github.com/svange/api-portal/commit/929fbd9e109850c44402cbde3d6575b4061d6436))
+
+* fix: change workflow to skip instead of fail when no env changes
+
+- Exit successfully with deploy_dev=false and deploy_prod=false
+- Prevents workflow failure when pushing non-environment changes
+- Downstream jobs skip based on conditions
+- Better user experience with informative messages ([`d74347d`](https://github.com/svange/api-portal/commit/d74347d432e382da3d77c34d7ef1e6d6961e25c7))
+
+* fix: use GH_TOKEN from secrets for release job
+
+- Update semantic-release to use secrets.GH_TOKEN instead of GITHUB_TOKEN
+- Add GH_TOKEN to gh release create step
+- Handle case where tag already exists by updating existing release
+- This fixes the &#39;release id for tag not found&#39; error ([`77e9480`](https://github.com/svange/api-portal/commit/77e9480696ff3c7dcb74e5d535ea03e4fddae27a))
+
+
 ## v0.1.0 (2025-07-30)
 
 ### Chore
+
+* chore(release): 0.1.0 [skip ci] ([`729b7f8`](https://github.com/svange/api-portal/commit/729b7f8571c5b17605c6a6a323e23fdaa2f3f65e))
 
 * chore: update deployment trigger timestamps in dev and prod configuration files ([`9e21e31`](https://github.com/svange/api-portal/commit/9e21e31dbf364bbbd74fe9aa1efba9ebf660b1ba))
 
