@@ -247,7 +247,7 @@ jobs:
         if: steps.should-deploy.outputs.should_deploy != 'true'
         run: |
           echo "::notice::Deployment was skipped for ${{ matrix.environment }}"
-          exit 78  # Special exit code that marks the job as "skipped"
+          # Exit successfully to avoid failing the matrix
 
 
   # DNS configuration is now handled by CloudFormation using the HostedZoneName parameter
