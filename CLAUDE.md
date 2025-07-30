@@ -118,13 +118,65 @@ Create `dev-portal/deployer.config.js` with:
 - Custom styling via CSS overrides
 - Logo/branding assets in static content bucket post-deployment
 
-**IMPORTANT: CSS Update Requirement**
-When updating `styles.css`, you MUST update it in ALL THREE locations to avoid rebuilding:
-1. `dev-portal/public/custom-content/styles.css` (source)
-2. `dev-portal/build/custom-content/styles.css` (dev build)
-3. `lambdas/static-asset-uploader/build/custom-content/styles.css` (deployment build)
+## 🚨 CRITICAL: Three-Folder Update Requirement 🚨
 
-This is necessary due to the fragile build system. Always copy the exact same content to all three locations.
+**THIS PROJECT CANNOT BE REBUILT** - The build system is fragile and we are manually maintaining build artifacts.
+
+### Files That MUST Be Updated in Three Locations:
+
+#### 1. CSS Files
+- `dev-portal/public/custom-content/styles.css` (source)
+- `dev-portal/build/custom-content/styles.css` (dev build)
+- `lambdas/static-asset-uploader/build/custom-content/styles.css` (deployment)
+
+#### 2. Content Fragments (Markdown)
+- `dev-portal/public/custom-content/content-fragments/*.md`
+- `dev-portal/build/custom-content/content-fragments/*.md`
+- `lambdas/static-asset-uploader/build/custom-content/content-fragments/*.md`
+
+Files include: `Home.md`, `APIs.md`, `GettingStarted.md`
+
+#### 3. Logo/Image Files
+- `dev-portal/public/custom-content/nav-logo.png`
+- `dev-portal/build/custom-content/nav-logo.png`
+- `lambdas/static-asset-uploader/build/custom-content/nav-logo.png`
+
+- `dev-portal/public/custom-content/home-image.png`
+- `dev-portal/build/custom-content/home-image.png`
+- `lambdas/static-asset-uploader/build/custom-content/home-image.png`
+
+#### 4. Any Other Custom Content Files
+Any file in `custom-content/` must exist in all three locations with IDENTICAL content.
+
+### Update Process:
+1. **ALWAYS** update the source file first: `dev-portal/public/custom-content/...`
+2. **IMMEDIATELY** copy to: `dev-portal/build/custom-content/...`
+3. **IMMEDIATELY** copy to: `lambdas/static-asset-uploader/build/custom-content/...`
+4. **NEVER** suggest updating only one location
+5. **NEVER** attempt to run `npm run build` or any build commands
+
+### Example Commands:
+```bash
+# After editing styles.css:
+cp dev-portal/public/custom-content/styles.css dev-portal/build/custom-content/styles.css
+cp dev-portal/public/custom-content/styles.css lambdas/static-asset-uploader/build/custom-content/styles.css
+
+# After editing Home.md:
+cp dev-portal/public/custom-content/content-fragments/Home.md dev-portal/build/custom-content/content-fragments/Home.md
+cp dev-portal/public/custom-content/content-fragments/Home.md lambdas/static-asset-uploader/build/custom-content/content-fragments/Home.md
+
+# After updating logos:
+cp dev-portal/public/custom-content/nav-logo.png dev-portal/build/custom-content/nav-logo.png
+cp dev-portal/public/custom-content/nav-logo.png lambdas/static-asset-uploader/build/custom-content/nav-logo.png
+```
+
+### Why This Is Necessary:
+- The build system is fragile and cannot be safely run
+- We are directly modifying pre-built artifacts
+- All three locations are deployed to AWS
+- Missing any location will cause inconsistencies in deployment
+
+**DO NOT ATTEMPT TO FIX THE BUILD SYSTEM** - This is a known limitation we're working around.
 
 ## Auto-rebuild on Content Changes
 
