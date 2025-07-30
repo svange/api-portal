@@ -118,6 +118,30 @@ Create `dev-portal/deployer.config.js` with:
 - Custom styling via CSS overrides
 - Logo/branding assets in static content bucket post-deployment
 
+## Auto-rebuild on Content Changes
+
+This project includes a pre-commit hook that automatically rebuilds the portal when content files are modified. This ensures that build artifacts in `lambdas/static-asset-uploader/build/` stay in sync with source files.
+
+### Setup
+```bash
+# Install pre-commit (if not already installed)
+pip install pre-commit
+
+# Install the git hooks
+pre-commit install
+```
+
+### How it Works
+- When you commit changes to content files (markdown, CSS, JS, etc.), the hook automatically runs `npm run build`
+- The updated build artifacts are added to your commit
+- This prevents deployment of stale content
+
+### Manual Rebuild
+If needed, you can manually rebuild:
+```bash
+npm run build
+```
+
 ## Understanding the Rebuild Token Architecture
 
 The portal uses a sophisticated rebuild token pattern to control what gets updated during deployments:

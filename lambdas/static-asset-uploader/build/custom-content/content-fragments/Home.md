@@ -1,7 +1,7 @@
 ---
 title: Developer Portal
 header: Developer Portal
-tagline: Your gateway to the data.
+tagline: Powered by Augmenting Integrations
 gettingStartedButton: Get Started
 apiListButton: Our APIs
 ---

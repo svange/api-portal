@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: auto-rebuild-content
+        name: Auto-rebuild on content changes
+        entry: node scripts/check-and-rebuild.js
+        language: system
+        files: ^dev-portal/(public|src)/.*\.(md|json|css|js|jsx|ts|tsx)$
+        pass_filenames: false
+        description: Automatically rebuilds the portal when content files change
