@@ -21,9 +21,8 @@ jobs:
     permissions:
       contents: read
     outputs:
-      environment: ${{ steps.detect.outputs.environment }}
-      config_file: ${{ steps.detect.outputs.config_file }}
-      skip_deployment: ${{ steps.detect.outputs.skip_deployment }}
+      deploy_dev: ${{ steps.detect.outputs.deploy_dev }}
+      deploy_prod: ${{ steps.detect.outputs.deploy_prod }}
     
     steps:
       - name: Check out repository
@@ -42,33 +41,34 @@ jobs:
             exit 1
           fi
           
-          # Determine which environment to deploy
+          # Determine which environments to deploy
+          deploy_dev=false
+          deploy_prod=false
+          
           if echo "$CHANGED_FILES" | grep -q "environments/dev.yaml"; then
-            echo "environment=dev" >> $GITHUB_OUTPUT
-            echo "config_file=environments/dev.yaml" >> $GITHUB_OUTPUT
-            echo "🚀 Detected DEV environment deployment"
-            
-            # Check if dev is enabled
+            echo "🚀 Detected DEV environment file change"
             if grep -q "^enabled: false" environments/dev.yaml; then
-              echo "skip_deployment=true" >> $GITHUB_OUTPUT
               echo "⏸️ DEV deployment is disabled"
             else
-              echo "skip_deployment=false" >> $GITHUB_OUTPUT
+              deploy_dev=true
             fi
-          elif echo "$CHANGED_FILES" | grep -q "environments/prod.yaml"; then
-            echo "environment=prod" >> $GITHUB_OUTPUT
-            echo "config_file=environments/prod.yaml" >> $GITHUB_OUTPUT
-            echo "🏭 Detected PROD environment deployment"
-            
-            # Check if prod is enabled
+          fi
+          
+          if echo "$CHANGED_FILES" | grep -q "environments/prod.yaml"; then
+            echo "🏭 Detected PROD environment file change"
             if grep -q "^enabled: false" environments/prod.yaml; then
-              echo "skip_deployment=true" >> $GITHUB_OUTPUT
               echo "⏸️ PROD deployment is disabled"
             else
-              echo "skip_deployment=false" >> $GITHUB_OUTPUT
+              deploy_prod=true
             fi
-          else
-            echo "❌ Unknown environment file changed"
+          fi
+          
+          # Output deployment flags
+          echo "deploy_dev=$deploy_dev" >> $GITHUB_OUTPUT
+          echo "deploy_prod=$deploy_prod" >> $GITHUB_OUTPUT
+          
+          if [[ "$deploy_dev" == "false" && "$deploy_prod" == "false" ]]; then
+            echo "❌ No enabled environments to deploy"
             exit 1
           fi
 
@@ -76,18 +76,41 @@ jobs:
     name: Deploy API Portal
     needs: detect-environment
     runs-on: ubuntu-latest
-    if: needs.detect-environment.outputs.skip_deployment != 'true'
+    if: needs.detect-environment.outputs.deploy_dev == 'true' || needs.detect-environment.outputs.deploy_prod == 'true'
     permissions:
       id-token: write
       contents: read
+    strategy:
+      matrix:
+        include:
+          - environment: dev
+            config_file: environments/dev.yaml
+            deploy_condition: ${{ needs.detect-environment.outputs.deploy_dev == 'true' }}
+          - environment: prod
+            config_file: environments/prod.yaml
+            deploy_condition: ${{ needs.detect-environment.outputs.deploy_prod == 'true' }}
+    env:
+      CONFIG_FILE: ${{ matrix.config_file }}
     
     steps:
+      - name: Check if this environment should deploy
+        id: should-deploy
+        run: |
+          if [[ "${{ matrix.deploy_condition }}" == "true" ]]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+            echo "✅ ${{ matrix.environment }} deployment enabled"
+          else
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+            echo "⏸️ ${{ matrix.environment }} deployment skipped"
+          fi
+
       - name: Check out repository
+        if: steps.should-deploy.outputs.should_deploy == 'true'
         uses: actions/checkout@v4
 
       - name: Parse AWS configuration from YAML
+        if: steps.should-deploy.outputs.should_deploy == 'true'
         run: |
-          CONFIG_FILE="${{ needs.detect-environment.outputs.config_file }}"
           echo "📋 Parsing AWS configuration from $CONFIG_FILE"
           
           # Extract AWS configuration using grep and awk
@@ -134,11 +157,13 @@ jobs:
       # The React app is already built and checked into lambdas/static-asset-uploader/build/
 
       - name: Set up SAM CLI
+        if: steps.should-deploy.outputs.should_deploy == 'true'
         uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
 
       - name: Configure AWS credentials
+        if: steps.should-deploy.outputs.should_deploy == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.PIPELINE_EXECUTION_ROLE }}
@@ -148,6 +173,7 @@ jobs:
           role-skip-session-tagging: true
 
       - name: Deploy with SAM
+        if: steps.should-deploy.outputs.should_deploy == 'true'
         run: |
           echo "🚀 Deploying stack: ${STACK_NAME}"
           echo "📦 Region: ${AWS_REGION}"
@@ -202,6 +228,7 @@ jobs:
             --parameter-overrides $PARAMS
 
       - name: Get deployment outputs
+        if: steps.should-deploy.outputs.should_deploy == 'true'
         run: |
           # Get stack outputs
           WEBSITE_URL=$(aws cloudformation describe-stacks \
@@ -221,16 +248,19 @@ jobs:
     name: Deployment Skipped
     needs: detect-environment
     runs-on: ubuntu-latest
-    if: needs.detect-environment.outputs.skip_deployment == 'true'
+    if: needs.detect-environment.outputs.deploy_dev == 'false' && needs.detect-environment.outputs.deploy_prod == 'false'
     
     steps:
       - name: Show skip message
         run: |
-          ENV="${{ needs.detect-environment.outputs.environment }}"
-          echo "⏸️ Deployment for ${ENV} environment is disabled"
+          echo "⏸️ No deployments were triggered"
+          echo ""
+          echo "Possible reasons:"
+          echo "- All environments have 'enabled: false'"
+          echo "- No environment files were changed"
           echo ""
           echo "To enable deployment:"
-          echo "1. Edit environments/${ENV}.yaml"
+          echo "1. Edit environments/dev.yaml or environments/prod.yaml"
           echo "2. Change 'enabled: false' to 'enabled: true'"
           echo "3. Commit and push the change"
           echo ""
@@ -240,7 +270,7 @@ jobs:
     name: Create release
     needs: [detect-environment, deploy]
     runs-on: ubuntu-latest
-    if: needs.detect-environment.outputs.environment == 'prod' && needs.detect-environment.outputs.skip_deployment != 'true'
+    if: needs.detect-environment.outputs.deploy_prod == 'true' && always() && needs.deploy.result == 'success'
     permissions:
       contents: write
       issues: write
