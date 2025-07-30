@@ -1,15 +1,22 @@
 ---
-title: Developer Portal
-header: Developer Portal
-tagline: Powered by Augmenting Integrations
+title: Augmenting Integrations
+header: Augmenting Integrations
+tagline: API Portal
 gettingStartedButton: Get Started
-apiListButton: Our APIs
+apiListButton: Browse APIs
 ---
 
-### EXPLORE AND BUILD
-        
-Read the Getting Started guide to learn how to hit the ground running to get an application up and running in no time.
+### Enterprise-Grade Serverless APIs
 
-See what APIs we have to offer, including extensive documentation, and generated SDKs.
+Build powerful integrations with our Python-based serverless infrastructure on AWS.
 
-Sign in to manage your subscriptions, see your current usage, get your API Key, and test against our live API.
+**What We Deliver:**
+- Production-ready APIs built with AWS Lambda and API Gateway
+- Python SDKs with comprehensive documentation
+- Real-time monitoring and usage analytics
+- Enterprise-level security and compliance
+
+**Built for Scale:**
+Our APIs leverage AWS serverless architecture for automatic scaling, high availability, and cost efficiency. No infrastructure to manage - just integrate and build.
+
+Get your API key and start building in minutes.
