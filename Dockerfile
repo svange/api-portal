@@ -183,5 +183,23 @@ RUN echo 'set number' >> /root/.vimrc && \
 # Note: Running as root to avoid Windows/Docker permission issues
 # The docker-compose.yml should NOT specify user: "1000:1000"
 
+# Add startup script to configure Git authentication
+RUN echo '#!/bin/bash\n\
+# Copy Windows gitconfig if it exists and create Linux-compatible version\n\
+if [ -f /root/.gitconfig.windows ]; then\n\
+    # Copy all settings except SSL backend\n\
+    grep -v "sslbackend" /root/.gitconfig.windows > /root/.gitconfig || true\n\
+fi\n\
+# Configure Git to use GitHub CLI for authentication if token is present\n\
+if [ -n "$GH_TOKEN" ]; then\n\
+    git config --global credential.https://github.com.helper "!gh auth git-credential"\n\
+    git config --global credential.https://gist.github.com.helper "!gh auth git-credential"\n\
+fi\n\
+# Force gnutls SSL backend\n\
+git config --global http.sslBackend gnutls\n\
+exec "$@"' > /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 # Default command keeps container running
 CMD ["tail", "-f", "/dev/null"]

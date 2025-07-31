@@ -21,7 +21,7 @@ services:
       - ~/projects/CLAUDE.md:/root/projects/CLAUDE.md:ro
       # Git and SSH configuration for root
       - ~/.ssh:/root/.ssh:ro
-      - ~/.gitconfig:/root/.gitconfig:ro
+      - ~/.gitconfig:/root/.gitconfig.windows:ro
       # AWS credentials for root (writable for SSO cache)
       - ~/.aws:/root/.aws
       # Poetry cache for performance
