@@ -10,21 +10,22 @@ services:
       - "5678"
       - "8000"
     volumes:
-      # Mount project at simple path
-      - .:/home/developer/projects/current-project
-      # Also mount at /workspace for convenience
-      - .:/workspace
-      # Claude configuration (mounted writable for history updates)
-      - ~/.claude:/home/developer/.claude
-      - ~/.claude.json:/home/developer/.claude.json
-      - ~/projects/CLAUDE.md:/home/developer/projects/CLAUDE.md
-      # Git and SSH configuration
-      - ~/.ssh:/home/developer/.ssh:ro
-      - ~/.gitconfig:/home/developer/.gitconfig:ro
-      # AWS credentials
-      - ~/.aws:/home/developer/.aws:ro
+      # Mount project at root's project directory to maintain CLAUDE.md hierarchy
+      - type: bind
+        source: .
+        target: /root/projects/current-project
+        consistency: delegated
+      # Claude configuration for root
+      - ~/.claude:/root/.claude
+      - ~/.claude.json:/root/.claude.json
+      - ~/projects/CLAUDE.md:/root/projects/CLAUDE.md:ro
+      # Git and SSH configuration for root
+      - ~/.ssh:/root/.ssh:ro
+      - ~/.gitconfig:/root/.gitconfig:ro
+      # AWS credentials for root (writable for SSO cache)
+      - ~/.aws:/root/.aws
       # Poetry cache for performance
-      - poetry-cache:/home/developer/.cache/pypoetry
+      - poetry-cache:/root/.cache/pypoetry
     environment:
       # Pass through AWS credentials if set
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
@@ -35,7 +36,9 @@ services:
       # GitHub token for MCP integration
       - GH_TOKEN=${GH_TOKEN:-}
       - GITHUB_TOKEN=${GH_TOKEN:-}
-    working_dir: /home/developer/projects/current-project
+    working_dir: /root/projects/current-project
+    # Run as root to avoid Windows/WSL2 permission issues
+    # user: "1000:1000"  # Commented out - running as root
     # Keep container running
     command: ["tail", "-f", "/dev/null"]
     stdin_open: true

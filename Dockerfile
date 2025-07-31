@@ -1,4 +1,4 @@
-# Dockerfile for augint-library development environment
+# Dockerfile for development environment
 # Optimized for Claude Code SSH access and IDE integration
 
 FROM python:3.12-bookworm
@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     iproute2 \
     dos2unix \
+    bind9-utils \
     # Python development
     python3-dev \
     # AWS CLI dependencies
@@ -81,46 +82,106 @@ RUN npx playwright install chrome --with-deps
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
 
-# No SSH configuration needed - we'll use docker exec
-
-# Create non-root user with sudo privileges
-RUN useradd -m -u 1000 -s /bin/bash developer && \
-    echo 'developer ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-    mkdir -p /home/developer/.ssh && \
-    chmod 700 /home/developer/.ssh && \
-    chown -R developer:developer /home/developer
-
-# Create workspace symlink
-RUN ln -s /home/developer/project /workspace
-
-# Switch to developer user
-USER developer
-
-# Set working directory
-WORKDIR /home/developer/projects/current-project
-
-# Pre-create Poetry cache directory
-RUN mkdir -p /home/developer/.cache/pypoetry
+# Create root's directory structure
+RUN mkdir -p /root/projects/current-project && \
+    mkdir -p /root/.cache/pypoetry && \
+    mkdir -p /root/.ssh && \
+    chmod 700 /root/.ssh
 
 # Configure Poetry to NOT use in-project virtualenvs
 RUN poetry config virtualenvs.in-project false
 
-# Configure shell to activate Poetry's virtualenv automatically
-RUN echo '# Auto-activate Poetry virtualenv' >> /home/developer/.bashrc && \
-    echo 'if command -v poetry &> /dev/null && [ -f "pyproject.toml" ]; then' >> /home/developer/.bashrc && \
-    echo '    VENV_PATH=$(poetry env info --path 2>/dev/null)' >> /home/developer/.bashrc && \
-    echo '    if [ -n "$VENV_PATH" ] && [ -f "$VENV_PATH/bin/activate" ]; then' >> /home/developer/.bashrc && \
-    echo '        source "$VENV_PATH/bin/activate"' >> /home/developer/.bashrc && \
-    echo '    fi' >> /home/developer/.bashrc && \
-    echo 'fi' >> /home/developer/.bashrc
+# Set working directory
+WORKDIR /root/projects/current-project
 
-RUN echo 'alias ll="ls -la"' >> /home/developer/.bashrc && \
-    echo 'alias la="ls -A"' >> /home/developer/.bashrc && \
-    echo 'alias l="ls -CF"' >> /home/developer/.bashrc && \
-    echo 'export EDITOR=vim' >> /home/developer/.bashrc
+# Switch to root and configure environment
+USER root
 
-#RUN sudo dos2unix .env
-#RUN echo '. .env' >> /home/developer/.bashrc
+# Set up root's bash environment with useful aliases and settings
+RUN echo '# Useful aliases' >> /root/.bashrc && \
+    echo 'alias ll="ls -la"' >> /root/.bashrc && \
+    echo 'alias la="ls -A"' >> /root/.bashrc && \
+    echo 'alias l="ls -CF"' >> /root/.bashrc && \
+    echo 'alias ..="cd .."' >> /root/.bashrc && \
+    echo 'alias ...="cd ../.."' >> /root/.bashrc && \
+    echo 'alias gs="git status"' >> /root/.bashrc && \
+    echo 'alias gd="git diff"' >> /root/.bashrc && \
+    echo 'alias gl="git log --oneline -10"' >> /root/.bashrc && \
+    echo 'alias dc="docker compose"' >> /root/.bashrc && \
+    echo 'alias tree="find . -print | sed -e \"s;[^/]*/;|____;g;s;____|; |;g\""' >> /root/.bashrc && \
+    echo '' >> /root/.bashrc && \
+    echo '# Environment settings' >> /root/.bashrc && \
+    echo 'export EDITOR=vim' >> /root/.bashrc && \
+    echo 'export HISTSIZE=10000' >> /root/.bashrc && \
+    echo 'export HISTFILESIZE=20000' >> /root/.bashrc && \
+    echo 'export HISTCONTROL=ignoreboth:erasedups' >> /root/.bashrc && \
+    echo '' >> /root/.bashrc && \
+    echo '# Better prompt showing git branch' >> /root/.bashrc && \
+    echo 'parse_git_branch() {' >> /root/.bashrc && \
+    echo '    git branch 2> /dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/ (\1)/"' >> /root/.bashrc && \
+    echo '}' >> /root/.bashrc && \
+    echo 'export PS1="\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\$ "' >> /root/.bashrc && \
+    echo '' >> /root/.bashrc && \
+    echo '# Auto-activate Poetry virtualenv if pyproject.toml exists' >> /root/.bashrc && \
+    echo 'if command -v poetry &> /dev/null && [ -f "pyproject.toml" ]; then' >> /root/.bashrc && \
+    echo '    VENV_PATH=$(poetry env info --path 2>/dev/null)' >> /root/.bashrc && \
+    echo '    if [ -n "$VENV_PATH" ] && [ -f "$VENV_PATH/bin/activate" ]; then' >> /root/.bashrc && \
+    echo '        source "$VENV_PATH/bin/activate"' >> /root/.bashrc && \
+    echo '    fi' >> /root/.bashrc && \
+    echo 'fi' >> /root/.bashrc && \
+    echo '' >> /root/.bashrc && \
+    echo '# Useful functions' >> /root/.bashrc && \
+    echo 'mkcd() { mkdir -p "$1" && cd "$1"; }' >> /root/.bashrc && \
+    echo 'extract() {' >> /root/.bashrc && \
+    echo '    if [ -f "$1" ]; then' >> /root/.bashrc && \
+    echo '        case "$1" in' >> /root/.bashrc && \
+    echo '            *.tar.bz2) tar xjf "$1" ;;' >> /root/.bashrc && \
+    echo '            *.tar.gz) tar xzf "$1" ;;' >> /root/.bashrc && \
+    echo '            *.tar) tar xf "$1" ;;' >> /root/.bashrc && \
+    echo '            *.zip) unzip "$1" ;;' >> /root/.bashrc && \
+    echo '            *) echo "Unknown archive format" ;;' >> /root/.bashrc && \
+    echo '        esac' >> /root/.bashrc && \
+    echo '    fi' >> /root/.bashrc && \
+    echo '}' >> /root/.bashrc
+
+# Install additional useful development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Search and file tools
+    ripgrep \
+    fd-find \
+    bat \
+    # Network tools
+    httpie \
+    # JSON tools
+    jo \
+    # Process monitoring
+    glances \
+    # DNS tools
+    dnsutils \
+    && rm -rf /var/lib/apt/lists/* && \
+    # Create symlinks for fd and bat (Debian names them differently)
+    ln -s /usr/bin/fdfind /usr/local/bin/fd && \
+    ln -s /usr/bin/batcat /usr/local/bin/bat
+
+# Configure git globally as root
+RUN git config --global --add safe.directory '*' && \
+    git config --global color.ui auto && \
+    git config --global core.editor vim
+
+# Configure system-wide git safe directories
+RUN echo "[safe]" >> /etc/gitconfig && \
+    echo "    directory = /root/projects/current-project" >> /etc/gitconfig
+
+# Set up vim with basic config
+RUN echo 'set number' >> /root/.vimrc && \
+    echo 'set autoindent' >> /root/.vimrc && \
+    echo 'set expandtab' >> /root/.vimrc && \
+    echo 'set tabstop=4' >> /root/.vimrc && \
+    echo 'set shiftwidth=4' >> /root/.vimrc && \
+    echo 'syntax on' >> /root/.vimrc
+
+# Note: Running as root to avoid Windows/Docker permission issues
+# The docker-compose.yml should NOT specify user: "1000:1000"
 
 # Default command keeps container running
 CMD ["tail", "-f", "/dev/null"]

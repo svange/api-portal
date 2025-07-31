@@ -1,2 +1,3 @@
 /lambdas/static-asset-uploader/build/** binary
-package-lock.json binary
+package-lock.js
+on binary
