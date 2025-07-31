@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        PROJECT_DIR: ${COMPOSE_PROJECT_NAME:-current-project}
     image: ${COMPOSE_PROJECT_NAME:-project}:dev
     container_name: ${COMPOSE_PROJECT_NAME:-project}-dev
     ports:
@@ -13,7 +15,7 @@ services:
       # Mount project at root's project directory to maintain CLAUDE.md hierarchy
       - type: bind
         source: .
-        target: /root/projects/current-project
+        target: /root/projects/${COMPOSE_PROJECT_NAME:-current-project}
         consistency: delegated
       # Claude configuration for root
       - ~/.claude:/root/.claude
@@ -26,6 +28,11 @@ services:
       - ~/.aws:/root/.aws
       # Poetry cache for performance
       - poetry-cache:/root/.cache/pypoetry
+      # Mount sibling projects
+      - ~/projects/api-portal:/root/projects/current-project/api-portal
+      - ~/projects/augint-api:/root/projects/current-project/augint-api
+      - ~/projects/augint-web:/root/projects/current-project/augint-web
+      - ~/projects/augint-library:/root/projects/current-project/augint-library
     environment:
       # Pass through AWS credentials if set
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
@@ -36,11 +43,11 @@ services:
       # GitHub token for MCP integration
       - GH_TOKEN=${GH_TOKEN:-}
       - GITHUB_TOKEN=${GH_TOKEN:-}
-    working_dir: /root/projects/current-project
+    working_dir: /root/projects/${COMPOSE_PROJECT_NAME:-current-project}
     # Run as root to avoid Windows/WSL2 permission issues
     # user: "1000:1000"  # Commented out - running as root
     # Keep container running
-    command: ["tail", "-f", "/dev/null"]
+    command: tail -f /dev/null
     stdin_open: true
     tty: true
 

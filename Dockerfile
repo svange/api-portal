@@ -82,8 +82,11 @@ RUN npx playwright install chrome --with-deps
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
 
+# Build argument for flexible project directory
+ARG PROJECT_DIR=current-project
+
 # Create root's directory structure
-RUN mkdir -p /root/projects/current-project && \
+RUN mkdir -p /root/projects/${PROJECT_DIR} && \
     mkdir -p /root/.cache/pypoetry && \
     mkdir -p /root/.ssh && \
     chmod 700 /root/.ssh
@@ -92,7 +95,7 @@ RUN mkdir -p /root/projects/current-project && \
 RUN poetry config virtualenvs.in-project false
 
 # Set working directory
-WORKDIR /root/projects/current-project
+WORKDIR /root/projects/${PROJECT_DIR}
 
 # Switch to root and configure environment
 USER root
@@ -166,11 +169,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Configure git globally as root
 RUN git config --global --add safe.directory '*' && \
     git config --global color.ui auto && \
-    git config --global core.editor vim
+    git config --global core.editor vim && \
+    git config --global credential.helper store && \
+    git config --global init.defaultBranch main && \
+    git config --global --unset-all http.sslbackend || true
 
-# Configure system-wide git safe directories
+# Configure system-wide git safe directories using build arg
+ARG PROJECT_DIR=current-project
 RUN echo "[safe]" >> /etc/gitconfig && \
-    echo "    directory = /root/projects/current-project" >> /etc/gitconfig
+    echo "    directory = /root/projects/${PROJECT_DIR}" >> /etc/gitconfig
 
 # Set up vim with basic config
 RUN echo 'set number' >> /root/.vimrc && \
@@ -182,6 +189,19 @@ RUN echo 'set number' >> /root/.vimrc && \
 
 # Note: Running as root to avoid Windows/Docker permission issues
 # The docker-compose.yml should NOT specify user: "1000:1000"
+
+# Create git wrapper that forces gnutls SSL backend and prevents local config pollution
+RUN echo '#!/bin/bash' > /usr/local/bin/git && \
+    echo '# Prevent writing SSL backend to local repo config which would break Windows Git' >> /usr/local/bin/git && \
+    echo 'if [[ "$*" == *"config"* ]] && [[ "$*" == *"sslbackend"* ]] && [[ "$*" != *"--global"* ]]; then' >> /usr/local/bin/git && \
+    echo '    echo "Warning: Preventing local sslbackend config. Use --global if needed." >&2' >> /usr/local/bin/git && \
+    echo '    exit 0' >> /usr/local/bin/git && \
+    echo 'fi' >> /usr/local/bin/git && \
+    echo 'exec /usr/bin/git -c http.sslBackend=gnutls "$@"' >> /usr/local/bin/git && \
+    chmod +x /usr/local/bin/git
+
+# Note: Project dependencies are installed on container startup via entrypoint
+# This is because the project files aren't available during build time
 
 # Add startup script to configure Git authentication
 RUN echo '#!/bin/bash\n\
@@ -195,11 +215,22 @@ if [ -n "$GH_TOKEN" ]; then\n\
     git config --global credential.https://github.com.helper "!gh auth git-credential"\n\
     git config --global credential.https://gist.github.com.helper "!gh auth git-credential"\n\
 fi\n\
-# Force gnutls SSL backend\n\
+# Force gnutls SSL backend globally only\n\
 git config --global http.sslBackend gnutls\n\
+# Install project dependencies if needed (checks Poetry virtualenv)\n\
+if [ -f "pyproject.toml" ]; then\n\
+    if ! poetry env info --path >/dev/null 2>&1; then\n\
+        echo "Installing project dependencies..."\n\
+        poetry install --no-interaction --no-ansi || true\n\
+    fi\n\
+fi\n\
+# Note: No cd command - Docker Compose working_dir handles the directory\n\
 exec "$@"' > /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+
 # Default command keeps container running
 CMD ["tail", "-f", "/dev/null"]
