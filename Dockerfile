@@ -166,7 +166,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Configure git globally as root
 RUN git config --global --add safe.directory '*' && \
     git config --global color.ui auto && \
-    git config --global core.editor vim
+    git config --global core.editor vim && \
+    git config --global core.hooksPath /dev/null
 
 # Configure system-wide git safe directories
 RUN echo "[safe]" >> /etc/gitconfig && \
@@ -199,6 +200,12 @@ fi\n\
 git config --global http.sslBackend gnutls\n\
 exec "$@"' > /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
+
+# Install project dependencies if pyproject.toml exists
+RUN if [ -f /root/projects/current-project/pyproject.toml ]; then \
+        cd /root/projects/current-project && \
+        poetry install --no-interaction --no-ansi || true; \
+    fi
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 # Default command keeps container running
