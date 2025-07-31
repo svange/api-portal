@@ -1,4 +1,4 @@
-# Dockerfile for development environment
+# Dockerfile for augint-library development environment
 # Optimized for Claude Code SSH access and IDE integration
 
 FROM python:3.12-bookworm
@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     iproute2 \
     dos2unix \
-    bind9-utils \
+    bind9-dnsutils \
     # Python development
     python3-dev \
     # AWS CLI dependencies
@@ -172,12 +172,17 @@ RUN git config --global --add safe.directory '*' && \
     git config --global core.editor vim && \
     git config --global credential.helper store && \
     git config --global init.defaultBranch main && \
-    git config --global --unset-all http.sslbackend || true
+    git config --global --unset-all http.sslbackend || true && \
+    git config --global core.hooksPath /dev/null
 
 # Configure system-wide git safe directories using build arg
 ARG PROJECT_DIR=current-project
 RUN echo "[safe]" >> /etc/gitconfig && \
-    echo "    directory = /root/projects/${PROJECT_DIR}" >> /etc/gitconfig
+    echo "    directory = /root/projects/${PROJECT_DIR}" >> /etc/gitconfig && \
+    echo "    directory = /root/projects/${PROJECT_DIR}/api-portal" >> /etc/gitconfig && \
+    echo "    directory = /root/projects/${PROJECT_DIR}/augint-api" >> /etc/gitconfig && \
+    echo "    directory = /root/projects/${PROJECT_DIR}/augint-web" >> /etc/gitconfig && \
+    echo "    directory = /root/projects/${PROJECT_DIR}/augint-library" >> /etc/gitconfig
 
 # Set up vim with basic config
 RUN echo 'set number' >> /root/.vimrc && \
@@ -200,8 +205,12 @@ RUN echo '#!/bin/bash' > /usr/local/bin/git && \
     echo 'exec /usr/bin/git -c http.sslBackend=gnutls "$@"' >> /usr/local/bin/git && \
     chmod +x /usr/local/bin/git
 
-# Note: Project dependencies are installed on container startup via entrypoint
-# This is because the project files aren't available during build time
+# Install project dependencies if pyproject.toml exists
+ARG PROJECT_DIR=current-project
+RUN if [ -f /root/projects/${PROJECT_DIR}/pyproject.toml ]; then \
+        cd /root/projects/${PROJECT_DIR} && \
+        poetry install --no-interaction --no-ansi || true; \
+    fi
 
 # Add startup script to configure Git authentication
 RUN echo '#!/bin/bash\n\
@@ -217,20 +226,10 @@ if [ -n "$GH_TOKEN" ]; then\n\
 fi\n\
 # Force gnutls SSL backend globally only\n\
 git config --global http.sslBackend gnutls\n\
-# Install project dependencies if needed (checks Poetry virtualenv)\n\
-if [ -f "pyproject.toml" ]; then\n\
-    if ! poetry env info --path >/dev/null 2>&1; then\n\
-        echo "Installing project dependencies..."\n\
-        poetry install --no-interaction --no-ansi || true\n\
-    fi\n\
-fi\n\
 # Note: No cd command - Docker Compose working_dir handles the directory\n\
 exec "$@"' > /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
-
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
-
 # Default command keeps container running
 CMD ["tail", "-f", "/dev/null"]
