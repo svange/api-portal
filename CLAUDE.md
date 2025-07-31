@@ -227,3 +227,48 @@ The portal uses a sophisticated rebuild token pattern to control what gets updat
 2. Test authentication after each deployment
 3. Add CSS changes incrementally with specific selectors
 4. Monitor CloudFormation events during deployment
+
+## Fork Repository Management
+
+**IMPORTANT**: This is a forked repository with specific limitations.
+
+### Fork Limitations
+- **Issues are disabled**: GitHub disables issues on forked repositories by default
+- **No auto-merge**: Branch protection rules and auto-merge settings don't transfer to forks
+- **PR numbers shared**: Pull requests share numbering with issues (even though issues are disabled)
+- **Upstream repository**: `aws-samples/aws-api-gateway-developer-portal`
+
+### Simplified Fork Workflow
+Since deployments are triggered by file changes in `environments/*.yaml`, we work directly on main:
+
+1. **All work on main**: Commit directly to main branch
+2. **File-based deployments**: Changes to `environments/dev.yaml` trigger dev deployments
+3. **No feature branches needed**: The deployment mechanism provides the safety net
+
+### Syncing with Upstream (if needed)
+```bash
+# Add upstream remote (one-time setup)
+git remote add upstream https://github.com/aws-samples/aws-api-gateway-developer-portal.git
+
+# Sync main branch with upstream
+git fetch upstream
+git merge upstream/main
+git push origin main
+```
+
+### Cleaning Up Old Branches
+Since we now work on main, clean up any existing feature branches:
+
+```bash
+# List all branches
+git branch -a
+
+# Delete local branch
+git branch -d branch-name
+
+# Delete remote branch  
+git push origin --delete branch-name
+
+# Clean up all merged branches locally
+git branch --merged main | grep -v main | xargs -n 1 git branch -d
+```

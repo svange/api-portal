@@ -18,6 +18,31 @@ It also optionally supports subscription/unsubscription through a SaaS product o
 ![Home screen](/screen-home.png?raw=true)
 ![Documentation screen](/screen-documentation.png?raw=true)
 
+## Fork Repository Information
+
+This is a fork of the [aws-samples/aws-api-gateway-developer-portal](https://github.com/aws-samples/aws-api-gateway-developer-portal) repository with some important considerations:
+
+### Fork Limitations
+- **Issues are disabled**: GitHub disables issues on forked repositories by default. All issues should be reported to the [upstream repository](https://github.com/aws-samples/aws-api-gateway-developer-portal/issues).
+- **Simplified workflow**: Since deployments are triggered by file changes to `environments/*.yaml`, we work directly on the main branch rather than using feature branches.
+- **No branch protection**: Auto-merge and branch protection rules don't transfer to forks.
+
+### Working with this Fork
+1. **Direct commits to main**: All changes are committed directly to the main branch
+2. **File-based deployments**: Modify `environments/dev.yaml` or `environments/prod.yaml` to trigger deployments
+3. **Syncing with upstream**: Periodically sync with the upstream repository to get updates
+
+### Syncing with Upstream
+```bash
+# Add upstream remote (one-time setup)
+git remote add upstream https://github.com/aws-samples/aws-api-gateway-developer-portal.git
+
+# Sync your fork with upstream
+git fetch upstream
+git merge upstream/main
+git push origin main
+```
+
 ## Setup
 
 There are four main ways to deploy the Developer Portal today:
