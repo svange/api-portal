@@ -1,0 +1,66 @@
+services:
+  # Main development container with Claude Code installed
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${COMPOSE_PROJECT_NAME:-project}:dev
+    container_name: ${COMPOSE_PROJECT_NAME:-project}-dev
+    ports:
+      - "5678"
+      - "8000"
+    volumes:
+      # Mount project at simple path
+      - .:/home/developer/projects/current-project
+      # Also mount at /workspace for convenience
+      - .:/workspace
+      # Claude configuration (mounted writable for history updates)
+      - ~/.claude:/home/developer/.claude
+      - ~/.claude.json:/home/developer/.claude.json
+      - ~/projects/CLAUDE.md:/home/developer/projects/CLAUDE.md
+      # Git and SSH configuration
+      - ~/.ssh:/home/developer/.ssh:ro
+      - ~/.gitconfig:/home/developer/.gitconfig:ro
+      # AWS credentials
+      - ~/.aws:/home/developer/.aws:ro
+      # Poetry cache for performance
+      - poetry-cache:/home/developer/.cache/pypoetry
+    environment:
+      # Pass through AWS credentials if set
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_PAGER=
+      # GitHub token for MCP integration
+      - GH_TOKEN=${GH_TOKEN:-}
+      - GITHUB_TOKEN=${GH_TOKEN:-}
+    working_dir: /home/developer/projects/current-project
+    # Keep container running
+    command: ["tail", "-f", "/dev/null"]
+    stdin_open: true
+    tty: true
+
+  # LocalStack for AWS services emulation
+  localstack:
+    image: localstack/localstack:latest
+    container_name: ${COMPOSE_PROJECT_NAME:-project}-localstack
+    ports:
+      - "4566:4566"              # LocalStack main endpoint
+      - "4510-4559:4510-4559"    # External service ports
+    environment:
+      - SERVICES=dynamodb,s3,lambda,sqs,sns
+      - DEBUG=${DEBUG:-0}
+      - DATA_DIR=/tmp/localstack/data
+      - LAMBDA_EXECUTOR=docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - localstack-data:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  # Named volumes for better performance
+  poetry-cache:
+    driver: local
+  localstack-data:
+    driver: local
