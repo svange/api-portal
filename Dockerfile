@@ -180,6 +180,7 @@ RUN git config --global --add safe.directory '*' && \
     git config --global core.editor vim && \
     git config --global credential.helper store && \
     git config --global init.defaultBranch main && \
+    git config --global core.hooksPath /dev/null && \
     git config --global --unset-all http.sslbackend || true
 
 # Configure system-wide git safe directories using build arg

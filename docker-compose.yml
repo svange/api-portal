@@ -28,11 +28,6 @@ services:
       - ~/.aws:/root/.aws
       # Poetry cache for performance
       - poetry-cache:/root/.cache/pypoetry
-      # Mount sibling projects
-      - ~/projects/api-portal:/root/projects/current-project/api-portal
-      - ~/projects/augint-api:/root/projects/current-project/augint-api
-      - ~/projects/augint-web:/root/projects/current-project/augint-web
-      - ~/projects/augint-library:/root/projects/current-project/augint-library
     environment:
       # Pass through AWS credentials if set
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
