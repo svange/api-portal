@@ -4,315 +4,82 @@ Add your custom styling here. Note that styling in the source is loaded AFTER th
 
 */
 
-/* Import modern fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+/* Dark Mode Theme for Augmenting Integrations */
 
-/* Professional Dark Mode Theme - Monokai Inspired */
-
-/* Main background - warmer, less harsh */
+/* Main background */
 body, #root {
-  background-color: #272822 !important;
-  color: #f8f8f2 !important;
+  background-color: #1a1a1a !important;
+  color: #e0e0e0 !important;
 }
 
 /* Semantic UI segments */
 .ui.segment {
-  background-color: #3e3d32 !important;
-  color: #f8f8f2 !important;
-  border: 1px solid #49483e !important;
+  background-color: #2a2a2a !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #3a3a3a !important;
 }
 
 /* Cards and containers */
 .ui.card, .ui.cards > .card {
-  background-color: #3e3d32 !important;
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.4) !important;
-  border: 1px solid #49483e !important;
+  background-color: #2a2a2a !important;
+  box-shadow: 0 1px 3px 0 #000 !important;
 }
 
-/* Tables - Much improved visibility */
+/* Tables */
 .ui.table {
-  background-color: #272822 !important;
-  color: #f8f8f2 !important;
-  border: 1px solid #49483e !important;
+  background-color: #2a2a2a !important;
+  color: #e0e0e0 !important;
 }
 
-.ui.table > thead > tr > th {
-  background-color: #49483e !important;
-  color: #f8f8f2 !important;
-  border-bottom: 2px solid #75715e !important;
-  font-weight: bold !important;
-}
-
-.ui.table > tbody > tr > td {
-  border-top: 1px solid #49483e !important;
-}
-
-/* Alternating row colors for better readability */
-.ui.table > tbody > tr:nth-child(even) {
-  background-color: #2f2e27 !important;
-}
-
-.ui.table > tbody > tr:hover {
-  background-color: #3e3d32 !important;
-}
-
-/* Table borders */
-.ui.table td {
-  border-left: 1px solid #49483e !important;
-}
-
-.ui.table td:first-child {
-  border-left: none !important;
-}
-
-/* Dividers - Now visible */
-.ui.divider {
-  border-top: 1px solid #49483e !important;
-  border-bottom: 1px solid #49483e !important;
-  color: #75715e !important;
-}
-
-.ui.horizontal.divider {
-  background-color: #272822 !important;
-}
-
-hr {
-  border: 0 !important;
-  height: 1px !important;
-  background: #49483e !important;
+.ui.table thead th {
+  background-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
 }
 
 /* Forms and inputs */
 .ui.form .field > label {
-  color: #f8f8f2 !important;
+  color: #e0e0e0 !important;
 }
 
-.ui.input input,
-.ui.form input[type="text"],
-.ui.form input[type="email"],
-.ui.form input[type="password"],
-.ui.form textarea {
-  background-color: #3e3d32 !important;
-  color: #f8f8f2 !important;
-  border: 1px solid #49483e !important;
+.ui.input input {
+  background-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
+  border-color: #4a4a4a !important;
 }
 
-.ui.input input:focus,
-.ui.form input:focus,
-.ui.form textarea:focus {
-  background-color: #49483e !important;
-  border-color: #75715e !important;
-}
-
-/* Dropdown menus */
-.ui.dropdown {
-  background-color: #3e3d32 !important;
-  color: #f8f8f2 !important;
-  border: 1px solid #49483e !important;
-}
-
-.ui.dropdown .menu {
-  background-color: #3e3d32 !important;
-  border: 1px solid #49483e !important;
-}
-
-.ui.dropdown .menu > .item {
-  color: #f8f8f2 !important;
-  border-top: 1px solid #49483e !important;
-}
-
-.ui.dropdown .menu > .item:hover {
-  background-color: #49483e !important;
-}
-
-/* Buttons - subtle styling */
+/* Buttons - keep positive/primary buttons bright */
 .ui.button {
-  background-color: #49483e !important;
-  color: #f8f8f2 !important;
-  border: 1px solid #75715e !important;
+  background-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
 }
 
-.ui.button:hover {
-  background-color: #75715e !important;
-}
-
-/* Keep CTAs bright and prominent */
 .ui.positive.button,
 .ui.primary.button {
-  background-color: #a6e22e !important;
-  color: #272822 !important;
-  border: none !important;
-}
-
-.ui.positive.button:hover,
-.ui.primary.button:hover {
-  background-color: #b8ff2e !important;
+  /* Keep these bright for CTAs */
+  background-color: #21ba45 !important;
+  color: white !important;
 }
 
 /* Headers */
 h1, h2, h3, h4, h5, h6,
 .ui.header {
-  color: #f8f8f2 !important;
+  color: #e0e0e0 !important;
 }
 
-/* Links - Monokai blue */
+/* Links */
 a {
-  color: #66d9ef !important;
+  color: #4db8ff !important;
 }
 
 a:hover {
-  color: #a1e7f5 !important;
-  text-decoration: underline !important;
-}
-
-/* Menu items */
-.ui.menu {
-  background-color: #3e3d32 !important;
-  border: 1px solid #49483e !important;
-}
-
-.ui.menu .item {
-  color: #f8f8f2 !important;
-}
-
-.ui.menu .active.item {
-  background-color: #49483e !important;
-}
-
-/* Modals */
-.ui.modal {
-  background-color: #3e3d32 !important;
-  border: 1px solid #49483e !important;
-}
-
-.ui.modal > .header {
-  background-color: #49483e !important;
-  color: #f8f8f2 !important;
-}
-
-/* Messages and alerts */
-.ui.message {
-  background-color: #3e3d32 !important;
-  color: #f8f8f2 !important;
-  border: 1px solid #49483e !important;
-}
-
-/* Code blocks */
-pre, code {
-  background-color: #3e3d32 !important;
-  color: #f8f8f2 !important;
-  border: 1px solid #49483e !important;
-}
-
-/* Swagger UI adjustments */
-.swagger-ui .info .title,
-.swagger-ui .scheme-container {
-  color: #f8f8f2 !important;
-}
-
-.swagger-ui .opblock {
-  background-color: #3e3d32 !important;
-  border: 1px solid #49483e !important;
-}
-
-/* Lists */
-.ui.list > .item {
-  color: #f8f8f2 !important;
-}
-
-/* Breadcrumbs */
-.ui.breadcrumb .divider {
-  color: #75715e !important;
+  color: #80ccff !important;
 }
 
 /* Home page hero section - already dark (slategray) */
 /* Keep the existing dark hero as-is */
 
-/* Modern Typography */
-body, .ui.text {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  font-weight: 400 !important;
-  line-height: 1.6 !important;
-}
-
-/* Headers use Lexend for distinction */
-h1, h2, h3, h4, h5, h6, .ui.header {
-  font-family: 'Lexend', 'Inter', sans-serif !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.02em !important;
-}
-
-/* Code elements */
-pre, code, .code, .mono {
-  font-family: 'JetBrains Mono', 'Courier New', monospace !important;
-  font-weight: 400 !important;
-}
-
-/* Professional spacing and curves */
-.ui.card, .ui.segment {
-  border-radius: 12px !important;
-  transition: all 0.2s ease !important;
-}
-
-.ui.card:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
-}
-
-/* Better buttons */
-.ui.button {
-  border-radius: 8px !important;
-  font-weight: 500 !important;
-  transition: all 0.2s ease !important;
-  text-transform: none !important;
-}
-
-/* Professional primary button with gradient */
-.ui.primary.button {
-  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%) !important;
-  color: white !important;
-  border: none !important;
-  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3) !important;
-}
-
-.ui.primary.button:hover {
-  background: linear-gradient(135deg, #00e5ff 0%, #00aadd 100%) !important;
-  box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4) !important;
-  transform: translateY(-1px) !important;
-}
-
-/* Improved input fields */
-.ui.input input {
-  border-radius: 8px !important;
-  transition: all 0.2s ease !important;
-}
-
-.ui.input input:focus {
-  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.3) !important;
-}
-
-/* Better code blocks */
-pre {
-  border-radius: 8px !important;
-  padding: 1.5rem !important;
-  overflow-x: auto !important;
-}
-
-/* Smooth scrollbar */
-::-webkit-scrollbar {
-  width: 10px !important;
-  height: 10px !important;
-}
-
-::-webkit-scrollbar-track {
-  background: #1a1a1a !important;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #49483e !important;
-  border-radius: 5px !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #75715e !important;
+/* API documentation sections */
+.swagger-ui .info .title,
+.swagger-ui .scheme-container {
+  color: #e0e0e0 !important;
 }
