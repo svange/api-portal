@@ -1,29 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(poetry add:*)",
-      "Bash(poetry remove:*)",
-      "Bash(poetry publish:*)",
-      "Bash(poetry version:*)",
-      "Bash(poetry install:*)",
-      "Bash(poetry show:*)",
-      "Bash(pip-audit:*)",
-      "Bash(pytest:*)",
-      "Bash(ruff:*)",
-      "Bash(mypy:*)",
-      "Bash(make:*)",
-      "Bash(docker:*)",
-      "Bash(docker-compose:*)",
-      "Bash(git:*)",
-      "Bash(gh:*)",
-      "Bash(sam:*)",
-      "Bash(aws:*)",
-      "Bash(npm:*)",
-      "Bash(node:*)"
+      "Bash(node run:*)",
+      "Bash(cfn-lint:*)",
+      "Bash(deploy.py:*)",
+      "Bash(identify:*)",
+      "Bash(magick:*)",
+      "Bash(convert:*)"
     ],
     "deny": [
-      "Bash(*poetry lock*)",
-      "Bash(*rm -rf /*)"
+      "Bash(*deploy*prod*)",
+      "Bash(*npm run build*)"
     ]
   },
   "hooks": {
@@ -33,42 +20,33 @@
         "hooks": [
           {
             "type": "command",
-            "command": "grep -E 'poetry (add|remove)' && grep -q 'exit_code\":0' && echo && echo \"Please run 'poetry lock' in Windows to update your lock file\" || exit 0"
+            "command": "grep -q 'node run deploy' && grep -q 'exit_code\":0' && echo && echo \"🚀 API Portal deployment started. Check CloudFormation stack progress.\" || exit 0"
           },
           {
             "type": "command",
-            "command": "grep -q 'poetry publish' && grep -q 'exit_code\":0' && echo && echo \"Package published to PyPI!\" && echo \"Don't forget to create a GitHub release with changelog\" || exit 0"
+            "command": "grep -q 'node run start' && grep -q 'exit_code\":0' && echo && echo \"🌐 Development server running at http://localhost:3000\" || exit 0"
           },
           {
             "type": "command",
-            "command": "grep -q 'pytest' && grep -q 'exit_code\":0' && coverage=$(grep -o '[0-9]\\+%' | tail -1 | grep -o '[0-9]\\+' || echo 0) && [ \"$coverage\" -lt 90 ] && echo && echo \"Warning: Coverage is $coverage% - must be 90%+ for libraries!\" || exit 0"
-          },
-          {
-            "type": "command",
-            "command": "grep -E 'docker-compose build' && grep -q 'exit_code\":0' && echo && echo \"Docker image rebuilt. Run 'make claude' to restart with new image.\" || exit 0"
-          },
-          {
-            "type": "command",
-            "command": "grep -q 'sam deploy' && grep -q 'exit_code\":0' && echo && echo \"SAM application deployed. Check CloudFormation console for stack status.\" || exit 0"
+            "command": "grep -E 'cp.*custom-content' && grep -q 'exit_code\":0' && echo && echo \"📄 Remember: Copy custom content to all THREE locations!\" || exit 0"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash(*rm -rf*)",
+        "matcher": "Bash(*npm run build*)",
         "hooks": [
           {
             "type": "command",
-            "command": "grep -q 'rm -rf /' && echo 'DANGEROUS: Refusing to delete root directory!' >&2 && exit 2 || exit 0"
+            "command": "echo '⚠️ Build system is fragile. Manually update files in THREE locations instead.' >&2 && exit 2"
           }
         ]
       }
     ]
   },
   "env": {
-    "DOCKER_BUILDKIT": "1",
-    "COMPOSE_DOCKER_CLI_BUILD": "1",
-    "PYTHONUNBUFFERED": "1"
+    "API_PORTAL": "true",
+    "BUILD_FRAGILE": "true"
   }
 }
