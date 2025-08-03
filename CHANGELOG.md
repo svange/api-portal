@@ -2,9 +2,22 @@
 
 
 
+## v0.4.1 (2025-08-03)
+
+### Chore
+
+* chore: simplify Makefile by removing unused commands ([`11f2d3c`](https://github.com/svange/api-portal/commit/11f2d3ca26cc2d748d626683841fd44d68e0ca22))
+
+### Fix
+
+* fix: update production environment timestamp in prod.yaml to trigger a release once and for all... I hope... ([`1c9e1ea`](https://github.com/svange/api-portal/commit/1c9e1eae8296d685427cb2c8c367b34134e4540a))
+
+
 ## v0.4.0 (2025-08-03)
 
 ### Chore
+
+* chore(release): 0.4.0 [skip ci] ([`328b5ea`](https://github.com/svange/api-portal/commit/328b5eafb089c05d698eeecc7528e076d35df084))
 
 * chore: trigger deployment with original dark theme
 
