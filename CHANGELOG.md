@@ -2,9 +2,122 @@
 
 
 
+## v0.4.0 (2025-08-03)
+
+### Chore
+
+* chore: trigger deployment with original dark theme
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude &lt;noreply@anthropic.com&gt; ([`254a098`](https://github.com/svange/api-portal/commit/254a09889239b9dd08d73289d78276b8560014ee))
+
+### Documentation
+
+* docs: enhance CLAUDE.md with core philosophy and development standards
+
+Added sections on enterprise development standards, required workflow, and pre-commit guidelines to improve clarity on project expectations and processes. Updated the branch naming convention and emphasized the importance of following TDD and documentation practices.
+
+Updated prod.yaml with the latest timestamp for deployment tracking. ([`bd152ee`](https://github.com/svange/api-portal/commit/bd152eed628b9b638c09350fe7cc111db283dc20))
+
+* docs: add fork repository management documentation
+
+- Updated CLAUDE.md with fork limitations and simplified workflow
+- Added Fork Repository Information section to README.md
+- Documented working directly on main branch strategy
+- Added instructions for syncing with upstream
+- Cleaned up all feature branches (deleted locally and remotely) ([`dc05c7e`](https://github.com/svange/api-portal/commit/dc05c7e400f20a497c633c205149dcd7a37c295f))
+
+### Feature
+
+* feat: update Docker and MCP configurations
+
+- Update .mcp.json with new tool configurations
+- Enhance Dockerfile with additional setup
+- Clean up docker-compose.yml
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude &lt;noreply@anthropic.com&gt; ([`575d14c`](https://github.com/svange/api-portal/commit/575d14caa2bfd1a4a737192a5f67777fd396e5b7))
+
+* feat: improve Docker environment for augint-library development
+
+- Update Dockerfile header to specify augint-library focus
+- Replace bind9-utils with bind9-dnsutils package
+- Disable git hooks globally via core.hooksPath
+- Add safe directories for all augint projects (api-portal, augint-api, augint-web, augint-library)
+- Install project dependencies during build if pyproject.toml exists
+- Remove runtime dependency installation from entrypoint
+
+These changes optimize the container for augint-library development with pre-installed dependencies and broader project support.
+
+Co-authored-by: Claude &lt;claude-assistant@anthropic.com&gt; ([`ff0cce0`](https://github.com/svange/api-portal/commit/ff0cce04c8c5aee142a02bd4432d029fc417e381))
+
+* feat: enhance Docker environment with improved Git authentication and tools
+
+- Add Git credential helper for seamless GitHub authentication
+- Install additional development tools (jq, tree, htop, vim, less)
+- Configure Git with enhanced settings for better Docker integration
+- Improve Docker Compose environment variables handling
+- Add proper Git configuration for root user
+
+Co-authored-by: Claude &lt;claude-assistant@anthropic.com&gt; ([`b01b4a6`](https://github.com/svange/api-portal/commit/b01b4a63f17cf6d393e1a1b99556150d181c1b45))
+
+* feat: add Docker Git authentication handling (#1)
+
+- Add docker-entrypoint.sh script to handle Git configuration
+- Mount Windows .gitconfig as .gitconfig.windows to avoid SSL conflicts
+- Auto-configure GitHub CLI authentication when GH_TOKEN is present
+- Force gnutls SSL backend to resolve curl SSL issues in container
+- Filter out Windows-specific SSL backend settings
+
+This improves the developer experience by automatically handling Git
+authentication differences between Windows host and Linux container.
+
+🤖 Generated with Claude Code
+
+Co-authored-by: Claude &lt;noreply@anthropic.com&gt; ([`6e09aa2`](https://github.com/svange/api-portal/commit/6e09aa288bd0a39d61f5f5dd997173ee8c4dda20))
+
+* feat: update Docker environment for root user with enhanced configurations and tools ([`d51bf55`](https://github.com/svange/api-portal/commit/d51bf55fa143893b8b07079731916f2f5cdff391))
+
+* feat: add Docker development environment with Claude Code and LocalStack integration ([`7f7c793`](https://github.com/svange/api-portal/commit/7f7c793c8e5b5056e642cc6542e814c4d82f292d))
+
+### Fix
+
+* fix: update development environment timestamp in dev.yaml ([`b4e71c7`](https://github.com/svange/api-portal/commit/b4e71c7aeac3874f3fe3423b876338ff12f1103c))
+
+* fix: correct Docker package name and improve Poetry setup
+
+- Fix bind9-dnsutils package name to bind9-utils
+- Enhance Poetry virtualenv auto-activation with dependency installation
+- Clean up redundant git safe directory configurations
+- Move dependency installation to entrypoint for better container startup
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude &lt;noreply@anthropic.com&gt; ([`0a75868`](https://github.com/svange/api-portal/commit/0a7586838ac51c7501acd1e612e7108654cd9f71))
+
+### Unknown
+
+* revert: restore original dark theme with brain logo
+
+- Remove Monokai-inspired dark theme (#272822 background)
+- Restore cleaner original dark theme (#1a1a1a background)
+- Replace cloud logos with original brain/head logo design
+- Keep existing content (Home.md, GettingStarted.md remain unchanged)
+- Reverts visual design from commits 56169ea0 and 20661318
+- Restores design from commit 67aa0848
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude &lt;noreply@anthropic.com&gt; ([`d99e309`](https://github.com/svange/api-portal/commit/d99e309e1cc2e3195a4589dc604735df313ca3cf))
+
+
 ## v0.3.0 (2025-07-30)
 
 ### Chore
+
+* chore(release): 0.3.0 [skip ci] ([`60e4d77`](https://github.com/svange/api-portal/commit/60e4d77a5712c1994ed2fbe9f2ae7bc5251a2946))
 
 * chore: trigger production deployment to test workflow fixes ([`e2228be`](https://github.com/svange/api-portal/commit/e2228be1b652d82a013e6581f18cf4374da2038f))
 
