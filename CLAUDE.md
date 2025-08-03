@@ -6,6 +6,78 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is the AWS API Gateway Serverless Developer Portal - a serverless application for developer engagement, allowing API owners to make their APIs available through self-service discovery, API key management, and testing capabilities.
 
+## Core Philosophy
+
+### Enterprise Development Standards
+- **TDD**: Test → Code → Refactor (write tests first, always)
+- **Conventional commits**: Strictly follow feat/fix/docs/perf/refactor/test/chore format
+- **Issue-driven**: All work must be tracked through GitHub issues
+- **Documentation**: Comprehensive documentation with examples for all features
+- **Code Review**: All changes through PR review process
+- **Security First**: Never commit secrets, always use environment variables
+- **Quality Gates**: All tests, linting, and security scans must pass
+
+### Development Workflow
+
+#### Required Workflow
+1. **Pick Issue**: `/ai-pick-issue` - Find or select issues to work on
+2. **Start Work**: `/ai-start-work 1` - Create proper branch and setup
+3. **TDD Development**: Write tests first, then implementation
+4. **Ship Work**: `/ai-ship` - Run quality checks, commit, and create PR
+
+#### Branch Naming Convention
+```
+feat/issue-123-description    # New features
+fix/issue-456-description     # Bug fixes
+docs/issue-789-description    # Documentation
+refactor/issue-012-description # Code refactoring
+test/issue-345-description    # Test additions
+chore/issue-678-description   # Maintenance tasks
+```
+
+## Pre-commit and Git Workflows
+
+### Pre-commit is Mandatory
+```bash
+# Always run before commits
+pre-commit run --all-files
+
+# Pre-commit handles:
+# - Code formatting (Prettier, ESLint)
+# - Linting (ESLint)
+# - Security checks
+# - YAML/JSON validation
+# - Trailing whitespace
+# - File endings
+```
+
+### Git Commit Standards
+Every commit must follow conventional commit format:
+
+```bash
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+Examples:
+```bash
+feat(auth): add JWT token validation
+
+Implements secure token validation for API endpoints.
+- Validates token signature
+- Checks expiration
+- Verifies issuer claims
+
+Closes #123
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
 ## Build and Development Commands
 
 ### Installation
@@ -238,12 +310,12 @@ The portal uses a sophisticated rebuild token pattern to control what gets updat
 - **PR numbers shared**: Pull requests share numbering with issues (even though issues are disabled)
 - **Upstream repository**: `aws-samples/aws-api-gateway-developer-portal`
 
-### Simplified Fork Workflow
-Since deployments are triggered by file changes in `environments/*.yaml`, we work directly on main:
+### Enterprise Fork Workflow
 
-1. **All work on main**: Commit directly to main branch
-2. **File-based deployments**: Changes to `environments/dev.yaml` trigger dev deployments
-3. **No feature branches needed**: The deployment mechanism provides the safety net
+1. **Always use feature branches**: Follow the branch naming convention
+2. **Create PRs for review**: All changes must be reviewed before merge
+3. **Deployment triggers**: After PR merge, update `environments/*.yaml` to deploy
+4. **Never commit to main directly**: Use the `/ai-pick-issue` → `/ai-start-work` → `/ai-ship` workflow
 
 ### Syncing with Upstream (if needed)
 ```bash
@@ -256,8 +328,8 @@ git merge upstream/main
 git push origin main
 ```
 
-### Cleaning Up Old Branches
-Since we now work on main, clean up any existing feature branches:
+### Managing Feature Branches
+Regularly clean up merged feature branches:
 
 ```bash
 # List all branches
