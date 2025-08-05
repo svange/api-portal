@@ -11,12 +11,17 @@ services:
     ports:
       - "5678"
       - "8000"
+      - "3000"
     volumes:
       # Mount project at root's project directory to maintain CLAUDE.md hierarchy
       - type: bind
         source: .
         target: /root/projects/${COMPOSE_PROJECT_NAME:-current-project}
         consistency: delegated
+      # Separate node_modules volume for platform isolation
+      - type: volume
+        source: node-modules-project
+        target: /root/projects/${COMPOSE_PROJECT_NAME:-current-project}/node_modules
       # Claude configuration for root
       - ~/.claude:/root/.claude
       - ~/.claude.json:/root/.claude.json
@@ -38,6 +43,9 @@ services:
       # GitHub token for MCP integration
       - GH_TOKEN=${GH_TOKEN:-}
       - GITHUB_TOKEN=${GH_TOKEN:-}
+      # Brave Search API key for MCP integration
+      - BRAVE_API_KEY=${BRAVE_API_KEY:-}
+
     working_dir: /root/projects/${COMPOSE_PROJECT_NAME:-current-project}
     # Run as root to avoid Windows/WSL2 permission issues
     # user: "1000:1000"  # Commented out - running as root
@@ -45,27 +53,65 @@ services:
     command: tail -f /dev/null
     stdin_open: true
     tty: true
+#    networks:
+#      - augint-web-network
 
   # LocalStack for AWS services emulation
-  localstack:
-    image: localstack/localstack:latest
-    container_name: ${COMPOSE_PROJECT_NAME:-project}-localstack
-    ports:
-      - "4566:4566"              # LocalStack main endpoint
-      - "4510-4559:4510-4559"    # External service ports
-    environment:
-      - SERVICES=dynamodb,s3,lambda,sqs,sns
-      - DEBUG=${DEBUG:-0}
-      - DATA_DIR=/tmp/localstack/data
-      - LAMBDA_EXECUTOR=docker
-      - DOCKER_HOST=unix:///var/run/docker.sock
-    volumes:
-      - localstack-data:/tmp/localstack
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+#  localstack:
+#    image: localstack/localstack:latest
+#    container_name: ${COMPOSE_PROJECT_NAME:-project}-localstack
+#    ports:
+#      - "4566:4566" # LocalStack main endpoint
+#      - "4510-4559:4510-4559" # External service ports
+#    environment:
+#      - SERVICES=dynamodb,s3,lambda,sqs,sns,cognito-idp
+#      - DEBUG=${DEBUG:-0}
+#      - DATA_DIR=/tmp/localstack/data
+#      - LAMBDA_EXECUTOR=docker
+#      - DOCKER_HOST=unix:///var/run/docker.sock
+#    volumes:
+#      - localstack-data:/tmp/localstack
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+#    networks:
+#      - augint-web-network
+#
+#  # DynamoDB Local for serverless development
+#  dynamodb-local:
+#    image: amazon/dynamodb-local:latest
+#    container_name: ${COMPOSE_PROJECT_NAME:-project}-dynamodb
+#    ports:
+#      - "8000:8000"
+#    command: "-jar DynamoDBLocal.jar -sharedDb -port 8000"
+#    volumes:
+#      - dynamodb-data:/data
+#    networks:
+#      - augint-web-network
+#
+#  # Redis for caching (optional service)
+#  redis:
+#    image: redis:7-alpine
+#    container_name: ${COMPOSE_PROJECT_NAME:-project}-redis
+#    profiles:
+#      - optional
+#    ports:
+#      - "6379:6379"
+#    command: redis-server --requirepass local-development-password
+#    volumes:
+#      - redis-data:/data
+#    networks:
+#      - augint-web-network
 
 volumes:
   # Named volumes for better performance
   poetry-cache:
     driver: local
-  localstack-data:
+#  localstack-data:
+#    driver: local
+  node-modules-project:
     driver: local
+#  dynamodb-data:
+#    driver: local
+
+#networks:
+#  augint-web-network:
+#    driver: bridge

@@ -5,6 +5,18 @@
 ## Introduction
 [![Build Status](https://travis-ci.org/awslabs/aws-api-gateway-developer-portal.svg?branch=master)](https://travis-ci.org/awslabs/aws-api-gateway-developer-portal)
 
+
+## 🔑 Key Development Characteristics
+
+| Characteristic | Details |
+|:--------------|:--------|
+| **Merge Strategy** | TBD |
+| **Deployment Model** | File-based IaC |
+| **Environments** | Direct deployment |
+| **Preview Environments** | TBD |
+| **Pipeline Features** | AWS Developer Portal |
+| **Special Considerations** | Swagger UI integration |
+
 The Amazon API Gateway Serverless Developer Portal is an application that you use for developer engagement by making your API Gateway APIs available to your customers through self-service discovery of those APIs. Your customers can use the developer portal to browse API documentation, register for – and immediately receive – their own API key that can be used to build applications, test published APIs, monitor their own API usage, generate SDKs, and submit feedback on your APIs design.
 
 For more information about Amazon API Gateway, visit the API Gateway [product page](https://aws.amazon.com/api-gateway/).

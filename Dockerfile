@@ -246,6 +246,16 @@ if [ -f "pyproject.toml" ]; then\n\
         export VIRTUAL_ENV="$VENV_PATH"\n\
     fi\n\
 fi\n\
+## Install Node dependencies if package.json exists\n\
+#if [ -f "package.json" ]; then\n\
+#    echo "===================================="\n\
+#    echo "Installing Node dependencies..."\n\
+#    echo "===================================="\n\
+#    npm install --no-audit --no-fund\n\
+#    echo "===================================="\n\
+#    echo "Node dependencies installed!"\n\
+#    echo "===================================="\n\
+#fi\n\
 # Note: No cd command - Docker Compose working_dir handles the directory\n\
 exec "$@"' > /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh

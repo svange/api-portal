@@ -4,6 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
+
+## 📚 Additional Context
+For detailed technical guides and patterns, see [LINKS.md](./LINKS.md) which provides AI-optimized documentation navigation. Load only the specific guides you need for your current task.
+
 This is the AWS API Gateway Serverless Developer Portal - a serverless application for developer engagement, allowing API owners to make their APIs available through self-service discovery, API key management, and testing capabilities.
 
 ## Core Philosophy

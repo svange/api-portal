@@ -25,23 +25,37 @@ clean:
 	rm -rf dist/ build/ htmlcov/ .coverage coverage.xml coverage.json
 
 # Docker targets
+# Convenience target to continue a Claude session
 claude:
 	@echo "Launching Claude Code..."
 	@docker-compose up -d dev
+	@echo "Waiting for container to be ready..."
 	@powershell -Command "Start-Sleep -Seconds 2"
-	@docker-compose exec -it dev claude
+	@docker-compose exec -it dev claude $(ARGS)
+
+
+claude-continue:
+	@$(MAKE) claude ARGS=-c
 
 join-claude:
+	@echo "Joining Claude container with bash shell..."
 	@docker-compose exec -it dev /bin/bash
 
+# Show ports for running containers
+ports:
+	@docker-compose ps
+
 docker-build:
+	@echo "Building Docker images..."
 	docker-compose build
 
 docker-stop:
-	docker-compose down
+	@echo "Stopping Docker containers..."
+	@docker-compose down
 
 docker-clean:
-	docker-compose down -v --remove-orphans
+	@echo "Cleaning up Docker resources..."
+	@docker-compose down -v --remove-orphans
 	docker system prune -f
-
+	rm -f pytest.log test-report.html
 
